@@ -10,33 +10,12 @@
 #import <OpenGL/gl3.h>
 #import "MyOpenGLView.h"
 
+#include "application.h"
+
 @implementation MyOpenGLView
 
 CVDisplayLinkRef displayLink;
-
-
-- (CVReturn) getFrameForTime:(const CVTimeStamp*)outputTime
-{
-	// There is no autorelease pool when this method is called
-	// because it will be called from a background thread.
-	// It's important to create one or app can leak objects.
-	
-	[self drawView];
-	
-	return kCVReturnSuccess;
-}
-
-// This is the renderer output callback function
-static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
-									  const CVTimeStamp* now,
-									  const CVTimeStamp* outputTime,
-									  CVOptionFlags flagsIn,
-									  CVOptionFlags* flagsOut,
-									  void* displayLinkContext)
-{
-    CVReturn result = [(__bridge MyOpenGLView*)displayLinkContext getFrameForTime:outputTime];
-    return result;
-}
+application* application_;
 
 - (void) awakeFromNib
 {
@@ -71,6 +50,24 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
     
     // Opt-In to Retina resolution
     [self setWantsBestResolutionOpenGLSurface:YES];
+}
+
+- (CVReturn) getFrameForTime:(const CVTimeStamp*)outputTime
+{
+	[self drawView];
+	return kCVReturnSuccess;
+}
+
+// This is the renderer output callback function
+static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
+									  const CVTimeStamp* now,
+									  const CVTimeStamp* outputTime,
+									  CVOptionFlags flagsIn,
+									  CVOptionFlags* flagsOut,
+									  void* displayLinkContext)
+{
+    CVReturn result = [(__bridge MyOpenGLView*)displayLinkContext getFrameForTime:outputTime];
+    return result;
 }
 
 - (void) prepareOpenGL
@@ -128,8 +125,10 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 	// OSX (but not iOS since iOS apps must create their own FBO)
 	//m_renderer = [[OpenGLRenderer alloc] initWithDefaultFBO:0];
     //m_renderer = renderer::factory().release();
+    application_ = application::make().release();
 }
 
+/*
 - (void) reshape
 {
 	[super reshape];
@@ -164,6 +163,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 	
 	CGLUnlockContext(( CGLContextObj)[[self openGLContext] CGLContextObj]);
 }
+ */
 
 
 - (void)renewGState
@@ -198,10 +198,13 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 	// simultaneously when resizing
 	CGLLockContext(( CGLContextObj)[[self openGLContext] CGLContextObj]);
     
+    NSRect viewRectPoints = [self bounds];
+    NSRect viewRectPixels = [self convertRectToBacking:viewRectPoints];
+    
+    
+    
 	//[m_renderer render];
-    //m_renderer->render();
-    glClearColor(rand()&1,rand()&1,rand()&1,1);
-    glClear(GL_COLOR_BUFFER_BIT);
+    application_->render(viewRectPixels.size.width, viewRectPixels.size.height, 0);
     
 	CGLFlushDrawable(( CGLContextObj)[[self openGLContext] CGLContextObj]);
 	CGLUnlockContext(( CGLContextObj)[[self openGLContext] CGLContextObj]);
@@ -215,6 +218,8 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 	CVDisplayLinkStop(displayLink);
     
 	CVDisplayLinkRelease(displayLink);
+    
+    delete application_;
     
 	// Release the display link AFTER display link has been released
 	//[m_renderer release];

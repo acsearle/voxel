@@ -18,9 +18,14 @@
 		CA99B2BA18A9CAEA000A67D4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA99B29918A9CAEA000A67D4 /* Cocoa.framework */; };
 		CA99B2C218A9CAEA000A67D4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2C018A9CAEA000A67D4 /* InfoPlist.strings */; };
 		CA99B2C418A9CAEA000A67D4 /* voxelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2C318A9CAEA000A67D4 /* voxelTests.m */; };
-		CA99B2CF18A9CB57000A67D4 /* MyOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2CE18A9CB57000A67D4 /* MyOpenGLView.m */; };
+		CA99B2CF18A9CB57000A67D4 /* MyOpenGLView.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2CE18A9CB57000A67D4 /* MyOpenGLView.mm */; };
 		CA99B2D118A9CD44000A67D4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA99B2D018A9CD44000A67D4 /* QuartzCore.framework */; };
 		CA99B2D318A9CD4F000A67D4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA99B2D218A9CD4F000A67D4 /* OpenGL.framework */; };
+		CA99B2D618A9D0B8000A67D4 /* application.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2D418A9D0B8000A67D4 /* application.cpp */; };
+		CA99B2D918A9DBAD000A67D4 /* program.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2D718A9DBAD000A67D4 /* program.cpp */; };
+		CA99B2DF18A9E42A000A67D4 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2DD18A9E42A000A67D4 /* shader.cpp */; };
+		CA99B2E118A9FF68000A67D4 /* basic.vsh in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2E018A9FF68000A67D4 /* basic.vsh */; };
+		CA99B2E418AA0255000A67D4 /* utility.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2E218AA0255000A67D4 /* utility.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -54,9 +59,19 @@
 		CA99B2C118A9CAEA000A67D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CA99B2C318A9CAEA000A67D4 /* voxelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = voxelTests.m; sourceTree = "<group>"; };
 		CA99B2CD18A9CB57000A67D4 /* MyOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyOpenGLView.h; sourceTree = "<group>"; };
-		CA99B2CE18A9CB57000A67D4 /* MyOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyOpenGLView.m; sourceTree = "<group>"; };
+		CA99B2CE18A9CB57000A67D4 /* MyOpenGLView.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = MyOpenGLView.mm; sourceTree = "<group>"; };
 		CA99B2D018A9CD44000A67D4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		CA99B2D218A9CD4F000A67D4 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
+		CA99B2D418A9D0B8000A67D4 /* application.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = application.cpp; sourceTree = "<group>"; };
+		CA99B2D518A9D0B8000A67D4 /* application.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = application.h; sourceTree = "<group>"; };
+		CA99B2D718A9DBAD000A67D4 /* program.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = program.cpp; sourceTree = "<group>"; };
+		CA99B2D818A9DBAD000A67D4 /* program.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = program.h; sourceTree = "<group>"; };
+		CA99B2DB18A9E396000A67D4 /* named.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = named.h; sourceTree = "<group>"; };
+		CA99B2DD18A9E42A000A67D4 /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
+		CA99B2DE18A9E42A000A67D4 /* shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shader.h; sourceTree = "<group>"; };
+		CA99B2E018A9FF68000A67D4 /* basic.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = basic.vsh; sourceTree = "<group>"; };
+		CA99B2E218AA0255000A67D4 /* utility.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = utility.mm; sourceTree = "<group>"; };
+		CA99B2E318AA0255000A67D4 /* utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -126,13 +141,17 @@
 		CA99B29F18A9CAEA000A67D4 /* voxel */ = {
 			isa = PBXGroup;
 			children = (
-				CA99B2AB18A9CAEA000A67D4 /* AppDelegate.h */,
-				CA99B2AC18A9CAEA000A67D4 /* AppDelegate.m */,
-				CA99B2AE18A9CAEA000A67D4 /* MainMenu.xib */,
-				CA99B2CD18A9CB57000A67D4 /* MyOpenGLView.h */,
-				CA99B2CE18A9CB57000A67D4 /* MyOpenGLView.m */,
-				CA99B2B118A9CAEA000A67D4 /* Images.xcassets */,
 				CA99B2A018A9CAEA000A67D4 /* Supporting Files */,
+				CA99B2D418A9D0B8000A67D4 /* application.cpp */,
+				CA99B2D518A9D0B8000A67D4 /* application.h */,
+				CA99B2D718A9DBAD000A67D4 /* program.cpp */,
+				CA99B2DD18A9E42A000A67D4 /* shader.cpp */,
+				CA99B2DE18A9E42A000A67D4 /* shader.h */,
+				CA99B2D818A9DBAD000A67D4 /* program.h */,
+				CA99B2DB18A9E396000A67D4 /* named.h */,
+				CA99B2E018A9FF68000A67D4 /* basic.vsh */,
+				CA99B2E218AA0255000A67D4 /* utility.mm */,
+				CA99B2E318AA0255000A67D4 /* utility.h */,
 			);
 			path = voxel;
 			sourceTree = "<group>";
@@ -140,6 +159,12 @@
 		CA99B2A018A9CAEA000A67D4 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				CA99B2AB18A9CAEA000A67D4 /* AppDelegate.h */,
+				CA99B2AC18A9CAEA000A67D4 /* AppDelegate.m */,
+				CA99B2AE18A9CAEA000A67D4 /* MainMenu.xib */,
+				CA99B2CD18A9CB57000A67D4 /* MyOpenGLView.h */,
+				CA99B2CE18A9CB57000A67D4 /* MyOpenGLView.mm */,
+				CA99B2B118A9CAEA000A67D4 /* Images.xcassets */,
 				CA99B2A118A9CAEA000A67D4 /* voxel-Info.plist */,
 				CA99B2A218A9CAEA000A67D4 /* InfoPlist.strings */,
 				CA99B2A518A9CAEA000A67D4 /* main.m */,
@@ -247,6 +272,7 @@
 				CA99B2B218A9CAEA000A67D4 /* Images.xcassets in Resources */,
 				CA99B2AA18A9CAEA000A67D4 /* Credits.rtf in Resources */,
 				CA99B2B018A9CAEA000A67D4 /* MainMenu.xib in Resources */,
+				CA99B2E118A9FF68000A67D4 /* basic.vsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -265,9 +291,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA99B2DF18A9E42A000A67D4 /* shader.cpp in Sources */,
+				CA99B2D918A9DBAD000A67D4 /* program.cpp in Sources */,
+				CA99B2D618A9D0B8000A67D4 /* application.cpp in Sources */,
+				CA99B2E418AA0255000A67D4 /* utility.mm in Sources */,
 				CA99B2AD18A9CAEA000A67D4 /* AppDelegate.m in Sources */,
 				CA99B2A618A9CAEA000A67D4 /* main.m in Sources */,
-				CA99B2CF18A9CB57000A67D4 /* MyOpenGLView.m in Sources */,
+				CA99B2CF18A9CB57000A67D4 /* MyOpenGLView.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -397,6 +427,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "voxel/voxel-Prefix.pch";
@@ -410,6 +441,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "voxel/voxel-Prefix.pch";
