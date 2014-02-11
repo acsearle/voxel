@@ -1,0 +1,479 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		CA99B29A18A9CAEA000A67D4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA99B29918A9CAEA000A67D4 /* Cocoa.framework */; };
+		CA99B2A418A9CAEA000A67D4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2A218A9CAEA000A67D4 /* InfoPlist.strings */; };
+		CA99B2A618A9CAEA000A67D4 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2A518A9CAEA000A67D4 /* main.m */; };
+		CA99B2AA18A9CAEA000A67D4 /* Credits.rtf in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2A818A9CAEA000A67D4 /* Credits.rtf */; };
+		CA99B2AD18A9CAEA000A67D4 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2AC18A9CAEA000A67D4 /* AppDelegate.m */; };
+		CA99B2B018A9CAEA000A67D4 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2AE18A9CAEA000A67D4 /* MainMenu.xib */; };
+		CA99B2B218A9CAEA000A67D4 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2B118A9CAEA000A67D4 /* Images.xcassets */; };
+		CA99B2B918A9CAEA000A67D4 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA99B2B818A9CAEA000A67D4 /* XCTest.framework */; };
+		CA99B2BA18A9CAEA000A67D4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA99B29918A9CAEA000A67D4 /* Cocoa.framework */; };
+		CA99B2C218A9CAEA000A67D4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2C018A9CAEA000A67D4 /* InfoPlist.strings */; };
+		CA99B2C418A9CAEA000A67D4 /* voxelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2C318A9CAEA000A67D4 /* voxelTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		CA99B2BB18A9CAEA000A67D4 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CA99B28E18A9CAE9000A67D4 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = CA99B29518A9CAE9000A67D4;
+			remoteInfo = voxel;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		CA99B29618A9CAE9000A67D4 /* voxel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = voxel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA99B29918A9CAEA000A67D4 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		CA99B29C18A9CAEA000A67D4 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
+		CA99B29D18A9CAEA000A67D4 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		CA99B29E18A9CAEA000A67D4 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		CA99B2A118A9CAEA000A67D4 /* voxel-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "voxel-Info.plist"; sourceTree = "<group>"; };
+		CA99B2A318A9CAEA000A67D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CA99B2A518A9CAEA000A67D4 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		CA99B2A718A9CAEA000A67D4 /* voxel-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "voxel-Prefix.pch"; sourceTree = "<group>"; };
+		CA99B2A918A9CAEA000A67D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; name = en; path = en.lproj/Credits.rtf; sourceTree = "<group>"; };
+		CA99B2AB18A9CAEA000A67D4 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		CA99B2AC18A9CAEA000A67D4 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		CA99B2AF18A9CAEA000A67D4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
+		CA99B2B118A9CAEA000A67D4 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		CA99B2B718A9CAEA000A67D4 /* voxelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = voxelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA99B2B818A9CAEA000A67D4 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
+		CA99B2BF18A9CAEA000A67D4 /* voxelTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "voxelTests-Info.plist"; sourceTree = "<group>"; };
+		CA99B2C118A9CAEA000A67D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		CA99B2C318A9CAEA000A67D4 /* voxelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = voxelTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		CA99B29318A9CAE9000A67D4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA99B29A18A9CAEA000A67D4 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA99B2B418A9CAEA000A67D4 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA99B2BA18A9CAEA000A67D4 /* Cocoa.framework in Frameworks */,
+				CA99B2B918A9CAEA000A67D4 /* XCTest.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		CA99B28D18A9CAE9000A67D4 = {
+			isa = PBXGroup;
+			children = (
+				CA99B29F18A9CAEA000A67D4 /* voxel */,
+				CA99B2BD18A9CAEA000A67D4 /* voxelTests */,
+				CA99B29818A9CAE9000A67D4 /* Frameworks */,
+				CA99B29718A9CAE9000A67D4 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		CA99B29718A9CAE9000A67D4 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				CA99B29618A9CAE9000A67D4 /* voxel.app */,
+				CA99B2B718A9CAEA000A67D4 /* voxelTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		CA99B29818A9CAE9000A67D4 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CA99B29918A9CAEA000A67D4 /* Cocoa.framework */,
+				CA99B2B818A9CAEA000A67D4 /* XCTest.framework */,
+				CA99B29B18A9CAEA000A67D4 /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		CA99B29B18A9CAEA000A67D4 /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				CA99B29C18A9CAEA000A67D4 /* AppKit.framework */,
+				CA99B29D18A9CAEA000A67D4 /* CoreData.framework */,
+				CA99B29E18A9CAEA000A67D4 /* Foundation.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		CA99B29F18A9CAEA000A67D4 /* voxel */ = {
+			isa = PBXGroup;
+			children = (
+				CA99B2AB18A9CAEA000A67D4 /* AppDelegate.h */,
+				CA99B2AC18A9CAEA000A67D4 /* AppDelegate.m */,
+				CA99B2AE18A9CAEA000A67D4 /* MainMenu.xib */,
+				CA99B2B118A9CAEA000A67D4 /* Images.xcassets */,
+				CA99B2A018A9CAEA000A67D4 /* Supporting Files */,
+			);
+			path = voxel;
+			sourceTree = "<group>";
+		};
+		CA99B2A018A9CAEA000A67D4 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CA99B2A118A9CAEA000A67D4 /* voxel-Info.plist */,
+				CA99B2A218A9CAEA000A67D4 /* InfoPlist.strings */,
+				CA99B2A518A9CAEA000A67D4 /* main.m */,
+				CA99B2A718A9CAEA000A67D4 /* voxel-Prefix.pch */,
+				CA99B2A818A9CAEA000A67D4 /* Credits.rtf */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		CA99B2BD18A9CAEA000A67D4 /* voxelTests */ = {
+			isa = PBXGroup;
+			children = (
+				CA99B2C318A9CAEA000A67D4 /* voxelTests.m */,
+				CA99B2BE18A9CAEA000A67D4 /* Supporting Files */,
+			);
+			path = voxelTests;
+			sourceTree = "<group>";
+		};
+		CA99B2BE18A9CAEA000A67D4 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				CA99B2BF18A9CAEA000A67D4 /* voxelTests-Info.plist */,
+				CA99B2C018A9CAEA000A67D4 /* InfoPlist.strings */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		CA99B29518A9CAE9000A67D4 /* voxel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA99B2C718A9CAEA000A67D4 /* Build configuration list for PBXNativeTarget "voxel" */;
+			buildPhases = (
+				CA99B29218A9CAE9000A67D4 /* Sources */,
+				CA99B29318A9CAE9000A67D4 /* Frameworks */,
+				CA99B29418A9CAE9000A67D4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = voxel;
+			productName = voxel;
+			productReference = CA99B29618A9CAE9000A67D4 /* voxel.app */;
+			productType = "com.apple.product-type.application";
+		};
+		CA99B2B618A9CAEA000A67D4 /* voxelTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = CA99B2CA18A9CAEA000A67D4 /* Build configuration list for PBXNativeTarget "voxelTests" */;
+			buildPhases = (
+				CA99B2B318A9CAEA000A67D4 /* Sources */,
+				CA99B2B418A9CAEA000A67D4 /* Frameworks */,
+				CA99B2B518A9CAEA000A67D4 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				CA99B2BC18A9CAEA000A67D4 /* PBXTargetDependency */,
+			);
+			name = voxelTests;
+			productName = voxelTests;
+			productReference = CA99B2B718A9CAEA000A67D4 /* voxelTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		CA99B28E18A9CAE9000A67D4 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0500;
+				ORGANIZATIONNAME = "Antony Searle";
+				TargetAttributes = {
+					CA99B2B618A9CAEA000A67D4 = {
+						TestTargetID = CA99B29518A9CAE9000A67D4;
+					};
+				};
+			};
+			buildConfigurationList = CA99B29118A9CAE9000A67D4 /* Build configuration list for PBXProject "voxel" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = CA99B28D18A9CAE9000A67D4;
+			productRefGroup = CA99B29718A9CAE9000A67D4 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				CA99B29518A9CAE9000A67D4 /* voxel */,
+				CA99B2B618A9CAEA000A67D4 /* voxelTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		CA99B29418A9CAE9000A67D4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA99B2A418A9CAEA000A67D4 /* InfoPlist.strings in Resources */,
+				CA99B2B218A9CAEA000A67D4 /* Images.xcassets in Resources */,
+				CA99B2AA18A9CAEA000A67D4 /* Credits.rtf in Resources */,
+				CA99B2B018A9CAEA000A67D4 /* MainMenu.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA99B2B518A9CAEA000A67D4 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA99B2C218A9CAEA000A67D4 /* InfoPlist.strings in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		CA99B29218A9CAE9000A67D4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA99B2AD18A9CAEA000A67D4 /* AppDelegate.m in Sources */,
+				CA99B2A618A9CAEA000A67D4 /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		CA99B2B318A9CAEA000A67D4 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				CA99B2C418A9CAEA000A67D4 /* voxelTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		CA99B2BC18A9CAEA000A67D4 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = CA99B29518A9CAE9000A67D4 /* voxel */;
+			targetProxy = CA99B2BB18A9CAEA000A67D4 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		CA99B2A218A9CAEA000A67D4 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CA99B2A318A9CAEA000A67D4 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		CA99B2A818A9CAEA000A67D4 /* Credits.rtf */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CA99B2A918A9CAEA000A67D4 /* en */,
+			);
+			name = Credits.rtf;
+			sourceTree = "<group>";
+		};
+		CA99B2AE18A9CAEA000A67D4 /* MainMenu.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CA99B2AF18A9CAEA000A67D4 /* Base */,
+			);
+			name = MainMenu.xib;
+			sourceTree = "<group>";
+		};
+		CA99B2C018A9CAEA000A67D4 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				CA99B2C118A9CAEA000A67D4 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		CA99B2C518A9CAEA000A67D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		CA99B2C618A9CAEA000A67D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		CA99B2C818A9CAEA000A67D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "voxel/voxel-Prefix.pch";
+				INFOPLIST_FILE = "voxel/voxel-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		CA99B2C918A9CAEA000A67D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				COMBINE_HIDPI_IMAGES = YES;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "voxel/voxel-Prefix.pch";
+				INFOPLIST_FILE = "voxel/voxel-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+		CA99B2CB18A9CAEA000A67D4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/voxel.app/Contents/MacOS/voxel";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "voxel/voxel-Prefix.pch";
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = "voxelTests/voxelTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Debug;
+		};
+		CA99B2CC18A9CAEA000A67D4 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(BUILT_PRODUCTS_DIR)/voxel.app/Contents/MacOS/voxel";
+				COMBINE_HIDPI_IMAGES = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(DEVELOPER_FRAMEWORKS_DIR)",
+					"$(inherited)",
+				);
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "voxel/voxel-Prefix.pch";
+				INFOPLIST_FILE = "voxelTests/voxelTests-Info.plist";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUNDLE_LOADER)";
+				WRAPPER_EXTENSION = xctest;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		CA99B29118A9CAE9000A67D4 /* Build configuration list for PBXProject "voxel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA99B2C518A9CAEA000A67D4 /* Debug */,
+				CA99B2C618A9CAEA000A67D4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		CA99B2C718A9CAEA000A67D4 /* Build configuration list for PBXNativeTarget "voxel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA99B2C818A9CAEA000A67D4 /* Debug */,
+				CA99B2C918A9CAEA000A67D4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+		CA99B2CA18A9CAEA000A67D4 /* Build configuration list for PBXNativeTarget "voxelTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CA99B2CB18A9CAEA000A67D4 /* Debug */,
+				CA99B2CC18A9CAEA000A67D4 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = CA99B28E18A9CAE9000A67D4 /* Project object */;
+}
