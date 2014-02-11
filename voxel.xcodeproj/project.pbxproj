@@ -18,6 +18,9 @@
 		CA99B2BA18A9CAEA000A67D4 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA99B29918A9CAEA000A67D4 /* Cocoa.framework */; };
 		CA99B2C218A9CAEA000A67D4 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2C018A9CAEA000A67D4 /* InfoPlist.strings */; };
 		CA99B2C418A9CAEA000A67D4 /* voxelTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2C318A9CAEA000A67D4 /* voxelTests.m */; };
+		CA99B2CF18A9CB57000A67D4 /* MyOpenGLView.m in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2CE18A9CB57000A67D4 /* MyOpenGLView.m */; };
+		CA99B2D118A9CD44000A67D4 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA99B2D018A9CD44000A67D4 /* QuartzCore.framework */; };
+		CA99B2D318A9CD4F000A67D4 /* OpenGL.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA99B2D218A9CD4F000A67D4 /* OpenGL.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -50,6 +53,10 @@
 		CA99B2BF18A9CAEA000A67D4 /* voxelTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "voxelTests-Info.plist"; sourceTree = "<group>"; };
 		CA99B2C118A9CAEA000A67D4 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		CA99B2C318A9CAEA000A67D4 /* voxelTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = voxelTests.m; sourceTree = "<group>"; };
+		CA99B2CD18A9CB57000A67D4 /* MyOpenGLView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyOpenGLView.h; sourceTree = "<group>"; };
+		CA99B2CE18A9CB57000A67D4 /* MyOpenGLView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyOpenGLView.m; sourceTree = "<group>"; };
+		CA99B2D018A9CD44000A67D4 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		CA99B2D218A9CD4F000A67D4 /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -57,6 +64,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA99B2D318A9CD4F000A67D4 /* OpenGL.framework in Frameworks */,
+				CA99B2D118A9CD44000A67D4 /* QuartzCore.framework in Frameworks */,
 				CA99B29A18A9CAEA000A67D4 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -95,6 +104,8 @@
 		CA99B29818A9CAE9000A67D4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CA99B2D218A9CD4F000A67D4 /* OpenGL.framework */,
+				CA99B2D018A9CD44000A67D4 /* QuartzCore.framework */,
 				CA99B29918A9CAEA000A67D4 /* Cocoa.framework */,
 				CA99B2B818A9CAEA000A67D4 /* XCTest.framework */,
 				CA99B29B18A9CAEA000A67D4 /* Other Frameworks */,
@@ -118,6 +129,8 @@
 				CA99B2AB18A9CAEA000A67D4 /* AppDelegate.h */,
 				CA99B2AC18A9CAEA000A67D4 /* AppDelegate.m */,
 				CA99B2AE18A9CAEA000A67D4 /* MainMenu.xib */,
+				CA99B2CD18A9CB57000A67D4 /* MyOpenGLView.h */,
+				CA99B2CE18A9CB57000A67D4 /* MyOpenGLView.m */,
 				CA99B2B118A9CAEA000A67D4 /* Images.xcassets */,
 				CA99B2A018A9CAEA000A67D4 /* Supporting Files */,
 			);
@@ -254,6 +267,7 @@
 			files = (
 				CA99B2AD18A9CAEA000A67D4 /* AppDelegate.m in Sources */,
 				CA99B2A618A9CAEA000A67D4 /* main.m in Sources */,
+				CA99B2CF18A9CB57000A67D4 /* MyOpenGLView.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
