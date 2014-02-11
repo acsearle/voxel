@@ -18,11 +18,14 @@ shader::shader(GLenum type) {
 }
 
 shader::~shader() {
-    
     glDeleteShader(name_);
 }
 
-void shader::source(vector<string> src) {
+shader& shader::source(string src) {
+    return source(vector<string>{1, src});
+}
+
+shader& shader::source(vector<string> src) {
     vector<GLchar*> pointers;
     vector<GLint> sizes;
     for (auto& s : src) {
@@ -30,9 +33,10 @@ void shader::source(vector<string> src) {
         sizes.push_back((GLint) s.size());
     }
     glShaderSource(name_, (GLsizei) src.size(), pointers.data(), sizes.data());
+    return *this;
 }
 
-void shader::compile() {
+shader& shader::compile() {
     glCompileShader(name_);
     GLsizei n;
     glGetShaderiv(name_, GL_INFO_LOG_LENGTH, &n);
@@ -47,4 +51,5 @@ void shader::compile() {
     glGetShaderiv(name_, GL_COMPILE_STATUS, &status);
     if (!status)
         throw compile_error{};
+    return *this;
 }

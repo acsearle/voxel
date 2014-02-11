@@ -26,6 +26,7 @@
 		CA99B2DF18A9E42A000A67D4 /* shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2DD18A9E42A000A67D4 /* shader.cpp */; };
 		CA99B2E118A9FF68000A67D4 /* basic.vsh in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2E018A9FF68000A67D4 /* basic.vsh */; };
 		CA99B2E418AA0255000A67D4 /* utility.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2E218AA0255000A67D4 /* utility.mm */; };
+		CA99B2EB18AA06AE000A67D4 /* basic.fsh in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2EA18AA06AE000A67D4 /* basic.fsh */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,9 +70,13 @@
 		CA99B2DB18A9E396000A67D4 /* named.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = named.h; sourceTree = "<group>"; };
 		CA99B2DD18A9E42A000A67D4 /* shader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = shader.cpp; sourceTree = "<group>"; };
 		CA99B2DE18A9E42A000A67D4 /* shader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = shader.h; sourceTree = "<group>"; };
-		CA99B2E018A9FF68000A67D4 /* basic.vsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = basic.vsh; sourceTree = "<group>"; };
+		CA99B2E018A9FF68000A67D4 /* basic.vsh */ = {isa = PBXFileReference; explicitFileType = sourcecode.glsl; fileEncoding = 4; path = basic.vsh; sourceTree = "<group>"; };
 		CA99B2E218AA0255000A67D4 /* utility.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = utility.mm; sourceTree = "<group>"; };
 		CA99B2E318AA0255000A67D4 /* utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = utility.h; sourceTree = "<group>"; };
+		CA99B2EA18AA06AE000A67D4 /* basic.fsh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = basic.fsh; sourceTree = "<group>"; };
+		CA99B2EC18AAA472000A67D4 /* vec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vec.h; sourceTree = "<group>"; };
+		CA99B2ED18AAA47D000A67D4 /* mat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mat.h; sourceTree = "<group>"; };
+		CA99B2EE18AAA6BA000A67D4 /* mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mesh.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -142,14 +147,18 @@
 			isa = PBXGroup;
 			children = (
 				CA99B2A018A9CAEA000A67D4 /* Supporting Files */,
-				CA99B2D418A9D0B8000A67D4 /* application.cpp */,
+				CA99B2EC18AAA472000A67D4 /* vec.h */,
+				CA99B2ED18AAA47D000A67D4 /* mat.h */,
 				CA99B2D518A9D0B8000A67D4 /* application.h */,
+				CA99B2D418A9D0B8000A67D4 /* application.cpp */,
+				CA99B2EE18AAA6BA000A67D4 /* mesh.h */,
+				CA99B2D818A9DBAD000A67D4 /* program.h */,
 				CA99B2D718A9DBAD000A67D4 /* program.cpp */,
 				CA99B2DD18A9E42A000A67D4 /* shader.cpp */,
 				CA99B2DE18A9E42A000A67D4 /* shader.h */,
-				CA99B2D818A9DBAD000A67D4 /* program.h */,
 				CA99B2DB18A9E396000A67D4 /* named.h */,
 				CA99B2E018A9FF68000A67D4 /* basic.vsh */,
+				CA99B2EA18AA06AE000A67D4 /* basic.fsh */,
 				CA99B2E218AA0255000A67D4 /* utility.mm */,
 				CA99B2E318AA0255000A67D4 /* utility.h */,
 			);
@@ -273,6 +282,7 @@
 				CA99B2AA18A9CAEA000A67D4 /* Credits.rtf in Resources */,
 				CA99B2B018A9CAEA000A67D4 /* MainMenu.xib in Resources */,
 				CA99B2E118A9FF68000A67D4 /* basic.vsh in Resources */,
+				CA99B2EB18AA06AE000A67D4 /* basic.fsh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

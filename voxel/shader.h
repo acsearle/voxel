@@ -23,12 +23,16 @@ public:
     explicit shader(GLenum type);
     ~shader();
     
-    void source(std::vector<std::string> src);
+    shader& source(std::string src);
+    shader& source(std::vector<std::string> src);
     
-    void compile();
+    shader& compile();
     
     class compile_error : public std::exception {
     };
+    
+    const GLenum vertex = GL_VERTEX_SHADER;
+    const GLenum fragment = GL_FRAGMENT_SHADER;
     
 };
 

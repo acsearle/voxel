@@ -1,3 +1,5 @@
+#version 410
+
 uniform mat4 cameraProjectionMatrix;
 uniform mat4 cameraViewMatrix;
 uniform mat4 modelMatrix;

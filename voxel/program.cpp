@@ -15,6 +15,7 @@
 
 #include "program.h"
 #include "shader.h"
+#include "utility.h"
 
 using namespace std;
 
@@ -43,9 +44,10 @@ string program::log()
 {
     GLint n;
     glGetProgramiv(name_, GL_INFO_LOG_LENGTH, &n);
-    string s(n, 'x');
-    glGetProgramInfoLog(name_, n, &n, (GLchar*) s.data());
-    return s;
+    vector<GLchar> s(n + 1);
+    if (n)
+        glGetProgramInfoLog(name_, n, &n, s.data());
+    return string{s.data()};
 }
 
 program& program::link() {
@@ -55,6 +57,16 @@ program& program::link() {
     glGetProgramiv(name_, GL_LINK_STATUS, &status);
     if (!status)
         throw link_error{};
+    return *this;
+}
+
+program& program::bind_attribute(GLuint index, string name) {
+    glBindAttribLocation(name_, index, name.c_str());
+    return *this;
+}
+
+program& program::bind_fragdata(GLuint color, string name) {
+    glBindFragDataLocation(name_, color, name.c_str());
     return *this;
 }
 
@@ -72,6 +84,20 @@ program& program::use() {
     glUseProgram(name_);
     return *this;
 }
+
+
+
+std::unique_ptr<program> make_program(std::string resource) {
+    unique_ptr<program> p(new program);
+    shader a(GL_VERTEX_SHADER);
+    shader b(GL_FRAGMENT_SHADER);
+    p->attach(a.source(load(resource, "vsh")).compile());
+    p->attach(b.source(load(resource, "fsh")).compile());
+    p->link();
+    return p;
+}
+
+
 
 
 /*
@@ -101,12 +127,3 @@ program& program::bind_active_attributes(map<string, GLint> binding) {
     
     
 */
-    /*
-    
-    glBindAttribLocation(<#GLuint program#>, <#GLuint index#>, <#const GLchar *name#>)
-    glBindFragDataLocation(<#GLuint program#>, <#GLuint color#>, <#const GLchar *name#>)
-     */
-//    return *this;
-//}
-
-/* glAttachShader, glBindAttribLocation, glCompileShader, glCreateProgram, glDeleteProgram, glDetachShader, glLinkProgram, glUniform, glValidateProgram, glVertexAttrib */
