@@ -85,6 +85,29 @@ program& program::use() {
     return *this;
 }
 
+program::uniform program::operator[](string s) {
+    return operator[](s.c_str());
+}
+
+program::uniform program::operator[](const char* c) {
+    GLint location = glGetUniformLocation(name_, c);
+    if (location == -1)
+        throw exception{};
+    return program::uniform(name_, location);
+}
+
+template<> program::uniform& program::uniform::operator=(mat<float, 4, 4> a) {
+    glUniformMatrix4fv(location_, 1, GL_FALSE, a.data());
+    return *this;
+}
+
+template<> program::uniform& program::uniform::operator=(GLint a) {
+    glUniform1i(location_, a);
+    return *this;
+}
+
+
+
 
 
 std::unique_ptr<program> make_program(std::string resource) {

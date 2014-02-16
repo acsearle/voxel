@@ -9,6 +9,8 @@
 #ifndef __voxel__program__
 #define __voxel__program__
 
+
+
 #include <OpenGL/gl3.h>
 
 #include "mat.h"
@@ -48,8 +50,12 @@ public:
         GLuint program_;
         GLint location_;
     public:
-        
+        uniform(GLuint program_name, GLint uniform_location) : program_(program_name), location_(uniform_location) {}
+        template<typename T> uniform& operator=(T);
     };
+    
+    uniform operator[](std::string s);
+    uniform operator[](const char* s);
     
 };
 

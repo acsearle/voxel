@@ -27,6 +27,12 @@
 		CA99B2E118A9FF68000A67D4 /* basic.vsh in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2E018A9FF68000A67D4 /* basic.vsh */; };
 		CA99B2E418AA0255000A67D4 /* utility.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2E218AA0255000A67D4 /* utility.mm */; };
 		CA99B2EB18AA06AE000A67D4 /* basic.fsh in Resources */ = {isa = PBXBuildFile; fileRef = CA99B2EA18AA06AE000A67D4 /* basic.fsh */; };
+		CA99B2F118AB0051000A67D4 /* evil.mm in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2EF18AB0051000A67D4 /* evil.mm */; };
+		CA99B2F318AB00A5000A67D4 /* GLKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CA99B2F218AB00A5000A67D4 /* GLKit.framework */; };
+		CA99B2F618AB36F6000A67D4 /* voxel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA99B2F418AB36F6000A67D4 /* voxel.cpp */; };
+		CA99B30E18ABC2A5000A67D4 /* vertex.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA99B30C18ABC2A5000A67D4 /* vertex.cpp */; };
+		CA99B31118AC47C1000A67D4 /* Texture.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA99B30F18AC47C1000A67D4 /* Texture.cpp */; };
+		CA99B31418AC8B4C000A67D4 /* Image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = CA99B31218AC8B4C000A67D4 /* Image.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +46,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		CA63083618B04ED7008E665C /* plan.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = plan.rtf; sourceTree = "<group>"; };
 		CA99B29618A9CAE9000A67D4 /* voxel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = voxel.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA99B29918A9CAEA000A67D4 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		CA99B29C18A9CAEA000A67D4 /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = System/Library/Frameworks/AppKit.framework; sourceTree = SDKROOT; };
@@ -77,6 +84,17 @@
 		CA99B2EC18AAA472000A67D4 /* vec.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = vec.h; sourceTree = "<group>"; };
 		CA99B2ED18AAA47D000A67D4 /* mat.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mat.h; sourceTree = "<group>"; };
 		CA99B2EE18AAA6BA000A67D4 /* mesh.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = mesh.h; sourceTree = "<group>"; };
+		CA99B2EF18AB0051000A67D4 /* evil.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = evil.mm; sourceTree = "<group>"; };
+		CA99B2F018AB0051000A67D4 /* evil.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = evil.h; sourceTree = "<group>"; };
+		CA99B2F218AB00A5000A67D4 /* GLKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLKit.framework; path = System/Library/Frameworks/GLKit.framework; sourceTree = SDKROOT; };
+		CA99B2F418AB36F6000A67D4 /* voxel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = voxel.cpp; sourceTree = "<group>"; };
+		CA99B2F518AB36F6000A67D4 /* voxel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = voxel.h; sourceTree = "<group>"; };
+		CA99B30C18ABC2A5000A67D4 /* vertex.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = vertex.cpp; sourceTree = "<group>"; };
+		CA99B30D18ABC2A5000A67D4 /* vertex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vertex.h; sourceTree = "<group>"; };
+		CA99B30F18AC47C1000A67D4 /* Texture.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Texture.cpp; sourceTree = "<group>"; };
+		CA99B31018AC47C1000A67D4 /* Texture.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Texture.h; sourceTree = "<group>"; };
+		CA99B31218AC8B4C000A67D4 /* Image.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Image.cpp; sourceTree = "<group>"; };
+		CA99B31318AC8B4C000A67D4 /* Image.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Image.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -84,6 +102,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CA99B2F318AB00A5000A67D4 /* GLKit.framework in Frameworks */,
 				CA99B2D318A9CD4F000A67D4 /* OpenGL.framework in Frameworks */,
 				CA99B2D118A9CD44000A67D4 /* QuartzCore.framework in Frameworks */,
 				CA99B29A18A9CAEA000A67D4 /* Cocoa.framework in Frameworks */,
@@ -124,6 +143,7 @@
 		CA99B29818A9CAE9000A67D4 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CA99B2F218AB00A5000A67D4 /* GLKit.framework */,
 				CA99B2D218A9CD4F000A67D4 /* OpenGL.framework */,
 				CA99B2D018A9CD44000A67D4 /* QuartzCore.framework */,
 				CA99B29918A9CAEA000A67D4 /* Cocoa.framework */,
@@ -151,6 +171,15 @@
 				CA99B2ED18AAA47D000A67D4 /* mat.h */,
 				CA99B2D518A9D0B8000A67D4 /* application.h */,
 				CA99B2D418A9D0B8000A67D4 /* application.cpp */,
+				CA99B30F18AC47C1000A67D4 /* Texture.cpp */,
+				CA99B31018AC47C1000A67D4 /* Texture.h */,
+				CA99B31218AC8B4C000A67D4 /* Image.cpp */,
+				CA99B31318AC8B4C000A67D4 /* Image.h */,
+				CA99B30D18ABC2A5000A67D4 /* vertex.h */,
+				CA99B30C18ABC2A5000A67D4 /* vertex.cpp */,
+				CA99B2F518AB36F6000A67D4 /* voxel.h */,
+				CA99B2F418AB36F6000A67D4 /* voxel.cpp */,
+				CA63083618B04ED7008E665C /* plan.rtf */,
 				CA99B2EE18AAA6BA000A67D4 /* mesh.h */,
 				CA99B2D818A9DBAD000A67D4 /* program.h */,
 				CA99B2D718A9DBAD000A67D4 /* program.cpp */,
@@ -173,6 +202,8 @@
 				CA99B2AE18A9CAEA000A67D4 /* MainMenu.xib */,
 				CA99B2CD18A9CB57000A67D4 /* MyOpenGLView.h */,
 				CA99B2CE18A9CB57000A67D4 /* MyOpenGLView.mm */,
+				CA99B2EF18AB0051000A67D4 /* evil.mm */,
+				CA99B2F018AB0051000A67D4 /* evil.h */,
 				CA99B2B118A9CAEA000A67D4 /* Images.xcassets */,
 				CA99B2A118A9CAEA000A67D4 /* voxel-Info.plist */,
 				CA99B2A218A9CAEA000A67D4 /* InfoPlist.strings */,
@@ -302,12 +333,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				CA99B2DF18A9E42A000A67D4 /* shader.cpp in Sources */,
+				CA99B2F118AB0051000A67D4 /* evil.mm in Sources */,
 				CA99B2D918A9DBAD000A67D4 /* program.cpp in Sources */,
+				CA99B30E18ABC2A5000A67D4 /* vertex.cpp in Sources */,
 				CA99B2D618A9D0B8000A67D4 /* application.cpp in Sources */,
 				CA99B2E418AA0255000A67D4 /* utility.mm in Sources */,
 				CA99B2AD18A9CAEA000A67D4 /* AppDelegate.m in Sources */,
+				CA99B2F618AB36F6000A67D4 /* voxel.cpp in Sources */,
 				CA99B2A618A9CAEA000A67D4 /* main.m in Sources */,
+				CA99B31418AC8B4C000A67D4 /* Image.cpp in Sources */,
 				CA99B2CF18A9CB57000A67D4 /* MyOpenGLView.mm in Sources */,
+				CA99B31118AC47C1000A67D4 /* Texture.cpp in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -520,6 +556,7 @@
 				CA99B2C918A9CAEA000A67D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		CA99B2CA18A9CAEA000A67D4 /* Build configuration list for PBXNativeTarget "voxelTests" */ = {
 			isa = XCConfigurationList;
@@ -528,6 +565,7 @@
 				CA99B2CC18A9CAEA000A67D4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

@@ -16,7 +16,7 @@ template<typename V, typename E> class mesh {
 public:
     std::vector<V> vertices;
     std::vector<E> elements;
-    
+    /*
     typedef typename V::position_type position_type;
     
     void add_position(position_type a) {
@@ -53,16 +53,17 @@ public:
         std::unique_ptr<mesh> m{new mesh{}};
         typedef position_type v;
         
-        m->add_quad(v(0,0,0), v(1,0,0), v(1,1,0), v(0,1,0));
-        m->add_quad(v(1,0,0), v(1,0,1), v(1,1,1), v(1,1,0));
-        m->add_quad(v(1,0,1), v(0,0,1), v(0,1,1), v(1,1,1));
-        m->add_quad(v(0,0,1), v(0,0,0), v(0,1,0), v(0,1,1));
+        m->add_quad(v(0,0,0), v(0,0,1), v(0,1,1), v(0,1,0)); // -X
+        m->add_quad(v(0,0,0), v(1,0,0), v(1,0,1), v(0,0,1)); // -Y
+        m->add_quad(v(0,0,0), v(0,1,0), v(1,1,0), v(1,0,0)); // -Z
         
-        m->add_quad(v(0,0,0), v(0,0,1), v(1,0,1), v(1,0,0));
-        m->add_quad(v(0,1,0), v(1,1,0), v(1,1,1), v(0,1,1));
+        m->add_quad(v(0,0,1), v(1,0,1), v(1,1,1), v(0,1,1)); // +X
+        m->add_quad(v(0,1,0), v(0,1,1), v(1,1,1), v(1,1,0)); // +Y
+        m->add_quad(v(1,0,0), v(1,1,0), v(1,1,1), v(1,0,1)); // +Z
         
         return m;
     }
+     */
 };
 
 

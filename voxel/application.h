@@ -19,7 +19,7 @@ public:
 
     virtual ~application() = 0;
     
-    virtual void render(std::size_t width, std::size_t height, std::int64_t time) = 0;
+    virtual void render(std::size_t width, std::size_t height, double time) = 0;
 
 };
 

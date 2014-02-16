@@ -54,7 +54,7 @@ application* application_;
 
 - (CVReturn) getFrameForTime:(const CVTimeStamp*)outputTime
 {
-	[self drawView];
+	[self drawViewForTime:outputTime];
 	return kCVReturnSuccess;
 }
 
@@ -185,10 +185,10 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 	// Called during resize operations
 	
 	// Avoid flickering during resize by drawiing
-	[self drawView];
+	[self drawViewForTime:nil];
 }
 
-- (void) drawView
+- (void) drawViewForTime:(const CVTimeStamp*)outputTime
 {
 	[[self openGLContext] makeCurrentContext];
     
@@ -202,9 +202,12 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
     NSRect viewRectPixels = [self convertRectToBacking:viewRectPoints];
     
     
+    static double t = 0;
+    t += 1.0/60.0;
+    
     
 	//[m_renderer render];
-    application_->render(viewRectPixels.size.width, viewRectPixels.size.height, 0);
+    application_->render(viewRectPixels.size.width, viewRectPixels.size.height, t);
     
 	CGLFlushDrawable(( CGLContextObj)[[self openGLContext] CGLContextObj]);
 	CGLUnlockContext(( CGLContextObj)[[self openGLContext] CGLContextObj]);
