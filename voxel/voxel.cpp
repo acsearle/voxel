@@ -92,7 +92,7 @@ void randomize(Voxel& v) {
     for (size_t k = 0; k != v.size()[2]; ++k)
         for (size_t j = 0; j != v.size()[1]; ++j)
             for (size_t i = 0; i != v.size()[0]; ++i)
-                v(i, j, k) = rand() & 1 ? rand() % 8 : 0;
+                v(i, j, k) = !(rand() & 0x3) ? rand() % 8 : 0;
 }
 
 
@@ -143,3 +143,77 @@ vec<float, 3> Voxel::raycast(vec<float, 3> a,
     return a;
 }
 
+void Voxel::paint() {
+
+    // tag each voxel.  a level of indirection allows us to merge regions as
+    // we discover their conections, without repainting
+    Voxel p(size_);
+    vector<size_t> mapping(1, 0);
+    
+    
+    auto merge = [&](type a, type b) {
+        // scan through the mappings redirecting things that point to b to
+        // point to a
+        if (b < a)
+            swap(a, b);
+        for (auto& c : mapping)
+            if (c == b)
+                c = a;
+        // we could track the reductions performed here and if the colors
+        // become too sparse, pause to recolor the voxels and compact the
+        // mapping
+    };
+    
+    for (size_t k = 0; k != size_[2]; ++k)
+        for (size_t j = 0; j != size_[1]; ++j)
+            for (size_t i = 0; i != size_[0]; ++i)
+                if (operator()(i,j,k))
+                {
+                    size_t h = 0;
+                    size_t r[3];
+                    
+                    auto append = [&](size_t s) {
+                        if (s) {
+                            for (size_t i = 0; i != h; ++i)
+                                if (s == r[i])
+                                    return;
+                            r[h++] = s;
+                        }
+                    };
+                    
+                    if (i > 0)
+                        append(mapping[p(i-1,j,k)]);
+                    if (j > 0)
+                        append(mapping[p(i,j-1,k)]);
+                    if (k > 0)
+                        append(mapping[p(i,j,k-1)]);
+
+                    if (h == 0) {
+                        // create a new color, mapped to itself
+                        p(i,j,k) = mapping.size();
+                        mapping.push_back(mapping.size());
+                    } else if (h == 1) {
+                        // one neighbour, adopt its mapped color
+                        p(i, j, k) = r[0];
+                    } else if (h == 2) {
+                        merge(r[0], r[1]);
+                        p(i, j, k) = mapping[r[0]]; // may have changed
+                    } else { // h == 3
+                        merge(r[0], r[1]);
+                        merge(mapping[r[0]], r[2]);
+                        p(i, j, k) = mapping[r[0]];
+                        
+                    }
+                }
+    vector<size_t> unique;
+    for (size_t i = 1; i != mapping.size(); ++i) {
+        if (mapping[i] == i)
+            unique.push_back(i);
+    }
+    
+    for (int i = 0; i != p.data_.size(); ++i) {
+        if (mapping[p.data_[i]] != unique[3])
+            data_[i] = 0;
+    }
+    
+}

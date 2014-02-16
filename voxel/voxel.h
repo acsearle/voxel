@@ -35,7 +35,7 @@ class Voxel {
 
 public:
 
-    typedef unsigned char type;
+    typedef unsigned short type;
     
     Voxel(vec<size_t, 3> size) : data_(prod(size), 0), size_(size) {}
     type& operator()(size_t i, size_t j, size_t k) {
@@ -49,6 +49,7 @@ public:
     vec<float, 3> raycast(vec<float, 3> a,
                         vec<float, 3> b);
     
+    void paint();
     
 private:
     
