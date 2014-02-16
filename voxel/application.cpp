@@ -65,7 +65,7 @@ public:
     GLsizei count;
     unique_ptr<btRigidBody> body;
     
-    VoxelBody(const Voxel& v, program& p, const btTransform& worldTransform, bool dynamic) {
+    VoxelBody(const Voxel& v, program& p, const btTransform& worldTransform, bool dynamic, btDynamicsWorld& dynamicsWorld) {
         auto m = v.makeMesh();
         buf.bind(GL_ARRAY_BUFFER).data(GL_ARRAY_BUFFER, m->vertices, GL_STATIC_DRAW);
         vao.bind();
@@ -104,8 +104,13 @@ public:
         btDefaultMotionState* myMotionState = new btDefaultMotionState(worldTransform * principal);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(totalMass,myMotionState,colShape,localInertia);
         body.reset(new btRigidBody(rbInfo));
+        dynamicsWorld.addRigidBody(body.get());
         principal.inverse().getOpenGLMatrix(model.data());
 
+    }
+    
+    ~VoxelBody() {
+        // undo add to dynamics world ///////////////////////////////////////////////////////////
     }
     
     void draw(program& p) {
@@ -149,8 +154,7 @@ private:
     unique_ptr<Texture> textureColor;
     unique_ptr<Texture> textureNormal;
     
-    unique_ptr<VoxelBody> vb;
-    unique_ptr<VoxelBody> ground;
+    vector<unique_ptr<VoxelBody>> bodies;
     
     unique_ptr<btDefaultCollisionConfiguration> collisionConfiguration;
 	unique_ptr<btCollisionDispatcher> dispatcher;
@@ -227,20 +231,45 @@ my_application::my_application() {
     v(0,0,0) = v(0, 1, 0) = v(1, 1, 0) = v(2, 1, 0) = 1;
      */
     
-    Voxel v{vec<size_t,3>{4,4,1}};
+    {
+        btCollisionShape* groundShape = new btBoxShape(btVector3(50,50,50));
+        btTransform groundTransform;
+        groundTransform.setIdentity();
+        groundTransform.setOrigin(btVector3(0,-50,0));
+        btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(0,myMotionState,groundShape,btVector3(0,0,0));
+        btRigidBody* body = new btRigidBody(rbInfo);
+        
+        //add the body to the dynamics world
+        dynamicsWorld->addRigidBody(body);
+
+    }
+    
+    
+    Voxel v{vec<size_t,3>{16,16,16}};
     randomize(v);
     
+    VoxelPainting blobs = v.paint();
+    for (short a : blobs.unique) {
+        Voxel u(v.size());
+        // selectively copy from v into u
+        for (size_t k = 0; k != v.size()[2]; ++k)
+            for (size_t j = 0; j != v.size()[1]; ++j)
+                for (size_t i = 0; i != v.size()[0]; ++i)
+                    if (blobs.mapping[blobs.p(i,j,k)] == a)
+                        u(i, j, k) = v(i, j, k);
+        // make a new object
+        btTransform trans;
+        trans.setIdentity();
+        bodies.emplace_back(new VoxelBody(u, *p, trans, true, *dynamicsWorld));
+    }
     
-    btTransform trans;
-    trans.setIdentity();
-    vb.reset(new VoxelBody(v, *p, trans, true));
-    dynamicsWorld->addRigidBody(vb->body.get());
+    
     
     //randomize(v);
     
-    trans.setOrigin(btVector3(0,-5,0));
-    ground.reset(new VoxelBody(v, *p, trans, false));
-    dynamicsWorld->addRigidBody(ground->body.get());
+    //trans.setOrigin(btVector3(0,-5,0));
+    //ground.reset(new VoxelBody(v, *p, trans, false, *dynamicsWorld));
     
     
     
@@ -295,18 +324,19 @@ void my_application::render(size_t width, size_t height, double time) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     
-    (*p)["cameraProjectionMatrix"] = perspective((float) M_PI_4, width / (float) height, 1.f, 1000.f);
-    (*p)["cameraViewMatrix"] = lookat(vec<float, 3>(4.0f, 8.0f, 12.0f),
-                                      vec<float, 3>(0.0f, 0.0f, 0.0f),
+    (*p)["cameraProjectionMatrix"] = perspective((float) M_PI_4*0.7f, width / (float) height, 1.f, 1000.f);
+    (*p)["cameraViewMatrix"] = lookat(vec<float, 3>(32.0f, 48.0f, 64.0f),
+                                      vec<float, 3>(8.0f, 8.0f, 8.0f),
                                       vec<float, 3>(0.0f, 1.0f, 0.0f));
 
+    static int countdown = 60;
     
-    dynamicsWorld->stepSimulation(1.f/60.f,10);
+    if (--countdown < 0)
+        dynamicsWorld->stepSimulation(1.f/60.f,10);
     
     
-    vb->draw(*p);
-    ground->draw(*p);
-    
+    for (auto& q : bodies)
+        q->draw(*p);
 
     opengl_health();
     

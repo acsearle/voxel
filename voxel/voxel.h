@@ -30,12 +30,16 @@ public:
     }
 };
 
+class VoxelPainting;
+
 
 class Voxel {
 
 public:
 
     typedef unsigned short type;
+    
+    Voxel() {}
     
     Voxel(vec<size_t, 3> size) : data_(prod(size), 0), size_(size) {}
 
@@ -53,7 +57,7 @@ public:
     vec<float, 3> raycast(vec<float, 3> a,
                         vec<float, 3> b) const;
     
-    void paint() const;
+    VoxelPainting paint() const;
     
 private:
     
@@ -62,6 +66,14 @@ private:
     
 };
 
+struct VoxelPainting {
+    Voxel p;
+    vector<short> mapping;
+    vector<short> unique;
+};
+
 void randomize(Voxel& v);
+void surface(Voxel& v);
+
 
 #endif /* defined(__voxel__voxel__) */

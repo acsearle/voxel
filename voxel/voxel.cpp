@@ -92,9 +92,18 @@ void randomize(Voxel& v) {
     for (size_t k = 0; k != v.size()[2]; ++k)
         for (size_t j = 0; j != v.size()[1]; ++j)
             for (size_t i = 0; i != v.size()[0]; ++i)
-                v(i, j, k) = !(rand() & 0x3) ? rand() % 8 : 0;
+                v(i, j, k) = !(rand() % 3) ? rand() % 8 : 0;
 }
 
+void surface(Voxel& v) {
+    for (size_t k = 0; k != v.size()[2]; ++k)
+        for (size_t j = 0; j != v.size()[1]; ++j)
+            for (size_t i = 0; i != v.size()[0]; ++i)
+            {
+                if (j < 8 + (sin(i * 0.5) + cos(k * 0.5)))
+                    v(i, j, k) = 2;
+            }
+}
 
 
 vec<float, 3> Voxel::raycast(vec<float, 3> a,
@@ -143,12 +152,15 @@ vec<float, 3> Voxel::raycast(vec<float, 3> a,
     return a;
 }
 
-void Voxel::paint() const {
+
+
+
+VoxelPainting Voxel::paint() const {
 
     // tag each voxel.  a level of indirection allows us to merge regions as
     // we discover their conections, without repainting
     Voxel p(size_);
-    vector<size_t> mapping(1, 0);
+    vector<short> mapping(1, 0);
     
     
     auto merge = [&](type a, type b) {
@@ -205,17 +217,16 @@ void Voxel::paint() const {
                         
                     }
                 }
-    vector<size_t> unique;
+    vector<short> unique;
     for (size_t i = 1; i != mapping.size(); ++i) {
         if (mapping[i] == i)
             unique.push_back(i);
     }
     
-    /*
-    for (int i = 0; i != p.data_.size(); ++i) {
-        if (mapping[p.data_[i]] != unique[3])
-            data_[i] = 0;
-    }
-     */
+    VoxelPainting q;
+    swap(q.p, p);
+    q.mapping.swap(mapping);
+    q.unique.swap(unique);
+    return q;
     
 }
