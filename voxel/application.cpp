@@ -31,29 +31,7 @@ application::~application() {
 
 
 
-class MyVertex {
-public:
-    vec<GLubyte, 3> inPosition;
-    vec<GLubyte, 2> inTexcoord;
-    static VertexDescription describe();
-};
 
-VertexDescription MyVertex::describe() {
-    VertexDescription d;
-    d.stride = sizeof(MyVertex);
-    d.attribs[0] = unique_ptr<VertexAttributeDescription>{new VertexAttributeDescription{
-        3, GL_UNSIGNED_BYTE, GL_FALSE, offsetof(MyVertex, inPosition)}};
-    d.attribs[8] = unique_ptr<VertexAttributeDescription>{new VertexAttributeDescription{
-        2, GL_UNSIGNED_BYTE, GL_FALSE, offsetof(MyVertex, inTexcoord)}};
-    return move(d);
-}
-
-
-
-
-// we can get strided and typed pointers to thngs as required
-
-// my_vertex becomes a convenience class when dealing with known data
 
 
 class buffer : public named {
@@ -106,8 +84,9 @@ public:
                 for (int k = 0; k != v.size()[2]; ++k)
                     if (v(i,j,k))
                     {
+                        // should check if this voxel is surrounded and therefore not necessary ///////////////////////////////////
                         childTransform.setOrigin(btVector3(i + 0.5, j + 0.5, k + 0.5));
-                        colShape->addChildShape(childTransform, new btBoxShape(btVector3(0.5,0.5,0.5))); // leak!
+                        colShape->addChildShape(childTransform, new btBoxShape(btVector3(0.5,0.5,0.5))); // leak! /////////////////
                         masses.push_back(1);
                         totalMass += 1;
                     }
@@ -257,6 +236,8 @@ my_application::my_application() {
     vb.reset(new VoxelBody(v, *p, trans, true));
     dynamicsWorld->addRigidBody(vb->body.get());
     
+    //randomize(v);
+    
     trans.setOrigin(btVector3(0,-5,0));
     ground.reset(new VoxelBody(v, *p, trans, false));
     dynamicsWorld->addRigidBody(ground->body.get());
@@ -314,7 +295,7 @@ void my_application::render(size_t width, size_t height, double time) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     
-    (*p)["cameraProjectionMatrix"] = perspective((float) M_PI_4, width / (float) height, 1.f, 100.f);
+    (*p)["cameraProjectionMatrix"] = perspective((float) M_PI_4, width / (float) height, 1.f, 1000.f);
     (*p)["cameraViewMatrix"] = lookat(vec<float, 3>(4.0f, 8.0f, 12.0f),
                                       vec<float, 3>(0.0f, 0.0f, 0.0f),
                                       vec<float, 3>(0.0f, 1.0f, 0.0f));
@@ -322,33 +303,6 @@ void my_application::render(size_t width, size_t height, double time) {
     
     dynamicsWorld->stepSimulation(1.f/60.f,10);
     
-    /*
-    //print positions of all objects
-    for (int j=dynamicsWorld->getNumCollisionObjects()-1; j>=0 ;j--)
-    {
-        btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[j];
-        btRigidBody* body = btRigidBody::upcast(obj);
-        if (body && body->getMotionState())
-        {
-            btTransform trans;
-            body->getMotionState()->getWorldTransform(trans);
-            
-            mat<float, 4, 4> model;
-            trans.getOpenGLMatrix(model.data());
-            model = model * translate(vec<float, 3>(-0.5f, -0.5f, -0.5f));
-            (*p)["modelMatrix"] = model;
-            (*p)["inverseTransposeModelMatrix"] = inverse(transpose(model));
-            
-            glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
-            
-            
-            
-            
-            
-            
-        }
-    }
-     */
     
     vb->draw(*p);
     ground->draw(*p);

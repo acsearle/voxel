@@ -513,6 +513,11 @@
 				COMBINE_HIDPI_IMAGES = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "voxel/voxel-Prefix.pch";
+				"HEADER_SEARCH_PATHS[arch=*]" = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					/usr/local/Cellar/bullet/2.82/include/bullet,
+				);
 				INFOPLIST_FILE = "voxel/voxel-Info.plist";
 				LIBRARY_SEARCH_PATHS = (
 					"$(inherited)",
