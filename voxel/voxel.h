@@ -38,18 +38,22 @@ public:
     typedef unsigned short type;
     
     Voxel(vec<size_t, 3> size) : data_(prod(size), 0), size_(size) {}
+
     type& operator()(size_t i, size_t j, size_t k) {
         return data_[i + size_[0] * (j + size_[1] * k)];
     }
+    const type& operator()(size_t i, size_t j, size_t k) const {
+        return data_[i + size_[0] * (j + size_[1] * k)];
+    }
     
-    std::unique_ptr<mesh<VoxelVertex, GLuint>> makeMesh();
+    std::unique_ptr<mesh<VoxelVertex, GLuint>> makeMesh() const;
     
     vec<size_t, 3> size() const { return size_; }
     
     vec<float, 3> raycast(vec<float, 3> a,
-                        vec<float, 3> b);
+                        vec<float, 3> b) const;
     
-    void paint();
+    void paint() const;
     
 private:
     

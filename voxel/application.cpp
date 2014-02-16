@@ -105,6 +105,8 @@ private:
 	unique_ptr<btBroadphaseInterface> overlappingPairCache;
 	unique_ptr<btSequentialImpulseConstraintSolver> solver;
 	unique_ptr<btDiscreteDynamicsWorld> dynamicsWorld;
+    btAlignedObjectArray<btCollisionShape*> collisionShapes;
+
     
 };
 
@@ -114,6 +116,29 @@ unique_ptr<application> application::make() {
 }
 
 
+class VoxelBody {
+    
+    buffer buf;
+    buffer elm;
+    vertex_array vao;
+    GLsizei count;
+    mat<float, 4, 4> model;
+    
+    
+public:
+    explicit VoxelBody(const Voxel& v) {
+        auto m = v.makeMesh();
+        buf.bind(GL_ARRAY_BUFFER).data(GL_ARRAY_BUFFER, m->vertices, GL_STATIC_DRAW);
+        vao.bind();
+        VoxelVertex::describe().use();
+        elm.bind(GL_ELEMENT_ARRAY_BUFFER).data(GL_ELEMENT_ARRAY_BUFFER, m->elements, GL_STATIC_DRAW);
+        count = (GLsizei) m->elements.size();
+    }
+    
+    void draw() {
+        
+    }
+};
 
 
 my_application::my_application() {
@@ -133,8 +158,8 @@ my_application::my_application() {
     
     opengl_health();
     
-    Voxel v{vec<size_t,3>{1,1,1}};
-    v(0,0,0) = 1;
+    Voxel v{vec<size_t,3>{3,2,1}};
+    v(0,0,0) = v(0, 1, 0) = v(1, 1, 0) = v(2, 1, 0) = 1;
     auto m = v.makeMesh();
     buf.bind(GL_ARRAY_BUFFER).data(GL_ARRAY_BUFFER, m->vertices, GL_STATIC_DRAW);
     vao.bind();
@@ -150,6 +175,11 @@ my_application::my_application() {
     (*p)["samplerColor"] = 0;
     (*p)["samplerNormal"] = 1;
     glEnable(GL_DEPTH_TEST);
+    
+    
+    p->validate();
+    p->use();
+    
     opengl_health();
     
     // OpenGL init end
@@ -171,17 +201,15 @@ my_application::my_application() {
     // Bullet init end
     
     // Ground
-	btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(0.5),btScalar(0.5),btScalar(0.5)));
-    
-	btAlignedObjectArray<btCollisionShape*> collisionShapes;
-    
-	collisionShapes.push_back(groundShape);
-    
-	btTransform groundTransform;
-	groundTransform.setIdentity();
-	groundTransform.setOrigin(btVector3(0,0,0));
-    
-	{
+    {
+        btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.),btScalar(0.5),btScalar(50.)));
+        
+        collisionShapes.push_back(groundShape);
+        
+        btTransform groundTransform;
+        groundTransform.setIdentity();
+        groundTransform.setOrigin(btVector3(0,-3,0));
+        
 		btScalar mass(0.);
         
 		//rigidbody is dynamic if and only if mass is non zero, otherwise static
@@ -200,10 +228,10 @@ my_application::my_application() {
 		dynamicsWorld->addRigidBody(body);
 	}
     
+    /*
     {
 		//create a dynamic rigidbody
-        
-		btCollisionShape* colShape = new btBoxShape(btVector3(0.5,0.5,0.5));
+        btCollisionShape* colShape = new btBoxShape(btVector3(0.5,0.5,0.5));
 		//btCollisionShape* colShape = new btSphereShape(btScalar(1.));
 		collisionShapes.push_back(colShape);
         
@@ -229,37 +257,60 @@ my_application::my_application() {
         
         dynamicsWorld->addRigidBody(body);
 	}
+     */
 
+    
     {
 		//create a dynamic rigidbody
-        
-		btCollisionShape* colShape = new btBoxShape(btVector3(0.5,0.5,0.5));
+        btCompoundShape* colShape = new btCompoundShape(false);
+        //btCollisionShape* colShape = new btBoxShape(btVector3(0.5,0.5,0.5));
 		//btCollisionShape* colShape = new btSphereShape(btScalar(1.));
 		collisionShapes.push_back(colShape);
-        
-		/// Create Dynamic Objects
-		btTransform startTransform;
+
+        btTransform startTransform;
 		startTransform.setIdentity();
         
-		btScalar	mass(1.f);
+        vector<btScalar> masses;
+        btScalar totalMass = 0;
         
-		//rigidbody is dynamic if and only if mass is non zero, otherwise static
-		bool isDynamic = (mass != 0.f);
+        for (int i = 0; i != v.size()[0]; ++i)
+            for (int j = 0; j != v.size()[1]; ++j)
+                for (int k = 0; k != v.size()[2]; ++k)
+                    if (v(i,j,k))
+                    {
+                        startTransform.setOrigin(btVector3(i + 0.5, j + 0.5, k + 0.5));
+                        colShape->addChildShape(startTransform, new btBoxShape(btVector3(0.5,0.5,0.5))); // leak!
+                        masses.push_back(1);
+                        totalMass += 1;
+                    }
         
-		btVector3 localInertia(0,0,0);
-		if (isDynamic)
-			colShape->calculateLocalInertia(mass,localInertia);
+        btTransform principal;
+        btVector3 localInertia;
+        colShape->calculatePrincipalAxisTransform(masses.data(), principal, localInertia);
         
-        startTransform.setOrigin(btVector3(0.0,4,0));
+        for (int i = 0; i != colShape->getNumChildShapes(); ++i)
+        {
+            btTransform c = colShape->getChildTransform(i);
+            colShape->updateChildTransform(i, principal.inverseTimes(c));
+        }
+
+        
+		/// Create Dynamic Objects
+		
+        startTransform = principal;
+        
+        
+        startTransform.setOrigin(btVector3(0.6,2,0));
 		
         //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
         btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, myMotionState, colShape, localInertia);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(totalMass,myMotionState,colShape,localInertia);
         btRigidBody* body = new btRigidBody(rbInfo);
         
         dynamicsWorld->addRigidBody(body);
 	}
 
+   
     
     
     
@@ -273,6 +324,28 @@ my_application::my_application() {
 }
 
 my_application::~my_application() {
+    
+    //remove the rigidbodies from the dynamics world and delete them
+	for (int i=dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
+	{
+		btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[i];
+		btRigidBody* body = btRigidBody::upcast(obj);
+		if (body && body->getMotionState())
+		{
+			delete body->getMotionState();
+		}
+		dynamicsWorld->removeCollisionObject( obj );
+		delete obj;
+	}
+    
+	//delete collision shapes
+	for (int j=0;j<collisionShapes.size();j++)
+	{
+		btCollisionShape* shape = collisionShapes[j];
+		collisionShapes[j] = 0;
+		delete shape;
+	}
+    
 }
 
 void my_application::render(size_t width, size_t height, double time) {
@@ -299,24 +372,15 @@ void my_application::render(size_t width, size_t height, double time) {
         {
             btTransform trans;
             body->getMotionState()->getWorldTransform(trans);
-            printf("world pos = %f,%f,%f\n",float(trans.getOrigin().getX()),float(trans.getOrigin().getY()),float(trans.getOrigin().getZ()));
             
-            
-            
-            //mat<float, 4, 4> model = rotateY((float) (0)) * translate(vec<float, 3>(-0.5f, -0.5f, -0.5f));
             mat<float, 4, 4> model;
             trans.getOpenGLMatrix(model.data());
             model = model * translate(vec<float, 3>(-0.5f, -0.5f, -0.5f));
             (*p)["modelMatrix"] = model;
             (*p)["inverseTransposeModelMatrix"] = inverse(transpose(model));
             
-            
-            
-            opengl_health();
-            
             glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
             
-            opengl_health();
             
             
             
@@ -325,16 +389,7 @@ void my_application::render(size_t width, size_t height, double time) {
         }
     }
 
-    
-    
-    
-    
-    
-    
-    
-
-    
-
+    opengl_health();
     
     
 }

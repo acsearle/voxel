@@ -28,7 +28,7 @@ VertexDescription VoxelVertex::describe() {
     return a;
 }
 
-unique_ptr<mesh<VoxelVertex, GLuint>> Voxel::makeMesh() {
+unique_ptr<mesh<VoxelVertex, GLuint>> Voxel::makeMesh() const {
     unique_ptr<mesh<VoxelVertex, GLuint>> m{new mesh<VoxelVertex, GLuint>{}};
     for (size_t k = 0; k != size_[2]; ++k)
         for (size_t j = 0; j != size_[1]; ++j)
@@ -98,7 +98,7 @@ void randomize(Voxel& v) {
 
 
 vec<float, 3> Voxel::raycast(vec<float, 3> a,
-             vec<float, 3> b) {
+             vec<float, 3> b) const {
     size_t i, j, k;
     do {
         float maxInvT = 0;
@@ -143,7 +143,7 @@ vec<float, 3> Voxel::raycast(vec<float, 3> a,
     return a;
 }
 
-void Voxel::paint() {
+void Voxel::paint() const {
 
     // tag each voxel.  a level of indirection allows us to merge regions as
     // we discover their conections, without repainting
@@ -211,9 +211,11 @@ void Voxel::paint() {
             unique.push_back(i);
     }
     
+    /*
     for (int i = 0; i != p.data_.size(); ++i) {
         if (mapping[p.data_[i]] != unique[3])
             data_[i] = 0;
     }
+     */
     
 }
