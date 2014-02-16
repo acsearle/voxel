@@ -78,6 +78,81 @@ public:
 
 
 
+class VoxelBody {
+public:
+    mat<float, 4, 4> ATTRIBUTE_ALIGNED128(model);
+    buffer buf;
+    buffer elm;
+    vertex_array vao;
+    GLsizei count;
+    unique_ptr<btRigidBody> body;
+    
+    VoxelBody(const Voxel& v, program& p, const btTransform& worldTransform, bool dynamic) {
+        auto m = v.makeMesh();
+        buf.bind(GL_ARRAY_BUFFER).data(GL_ARRAY_BUFFER, m->vertices, GL_STATIC_DRAW);
+        vao.bind();
+        VoxelVertex::describe().use();
+        elm.bind(GL_ELEMENT_ARRAY_BUFFER).data(GL_ELEMENT_ARRAY_BUFFER, m->elements, GL_STATIC_DRAW);
+        count = (GLsizei) m->elements.size();
+        
+        btCompoundShape* colShape = new btCompoundShape(true); // leak!
+		// collisionShapes.push_back(colShape);
+        btTransform childTransform;
+		childTransform.setIdentity();
+        vector<btScalar> masses;
+        btScalar totalMass = 0;
+        for (int i = 0; i != v.size()[0]; ++i)
+            for (int j = 0; j != v.size()[1]; ++j)
+                for (int k = 0; k != v.size()[2]; ++k)
+                    if (v(i,j,k))
+                    {
+                        childTransform.setOrigin(btVector3(i + 0.5, j + 0.5, k + 0.5));
+                        colShape->addChildShape(childTransform, new btBoxShape(btVector3(0.5,0.5,0.5))); // leak!
+                        masses.push_back(1);
+                        totalMass += 1;
+                    }
+        btTransform principal;
+        btVector3 localInertia;
+        colShape->calculatePrincipalAxisTransform(masses.data(), principal, localInertia);
+        for (int i = 0; i != colShape->getNumChildShapes(); ++i) {
+            btTransform c = colShape->getChildTransform(i);
+            colShape->updateChildTransform(i, principal.inverseTimes(c));
+        }
+        if (!dynamic) {
+            totalMass = 0;
+            localInertia = btVector3(0,0,0);
+        }
+        btDefaultMotionState* myMotionState = new btDefaultMotionState(worldTransform * principal);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(totalMass,myMotionState,colShape,localInertia);
+        body.reset(new btRigidBody(rbInfo));
+        principal.inverse().getOpenGLMatrix(model.data());
+
+    }
+    
+    void draw(program& p) {
+        p.use();
+        vao.bind();
+        elm.bind(GL_ELEMENT_ARRAY_BUFFER);
+     
+        btTransform trans;
+        body->getMotionState()->getWorldTransform(trans);
+        
+        mat<float, 4, 4> a;
+        trans.getOpenGLMatrix(a.data());
+        a = a * model;
+        p["modelMatrix"] = a;
+        p["inverseTransposeModelMatrix"] = inverse(transpose(a));
+        
+        
+        glDrawElements(GL_TRIANGLES, count, GL_UNSIGNED_INT, 0);
+        
+        
+    }
+
+};
+
+
+
 
 class my_application : public application {
     
@@ -94,11 +169,9 @@ private:
     unique_ptr<program> p;
     unique_ptr<Texture> textureColor;
     unique_ptr<Texture> textureNormal;
-    buffer buf;
-    buffer elm;
-    vertex_array vao;
-    GLsizei count;
     
+    unique_ptr<VoxelBody> vb;
+    unique_ptr<VoxelBody> ground;
     
     unique_ptr<btDefaultCollisionConfiguration> collisionConfiguration;
 	unique_ptr<btCollisionDispatcher> dispatcher;
@@ -115,30 +188,6 @@ unique_ptr<application> application::make() {
     return unique_ptr<application>{new my_application{}};
 }
 
-
-class VoxelBody {
-    
-    buffer buf;
-    buffer elm;
-    vertex_array vao;
-    GLsizei count;
-    mat<float, 4, 4> model;
-    
-    
-public:
-    explicit VoxelBody(const Voxel& v) {
-        auto m = v.makeMesh();
-        buf.bind(GL_ARRAY_BUFFER).data(GL_ARRAY_BUFFER, m->vertices, GL_STATIC_DRAW);
-        vao.bind();
-        VoxelVertex::describe().use();
-        elm.bind(GL_ELEMENT_ARRAY_BUFFER).data(GL_ELEMENT_ARRAY_BUFFER, m->elements, GL_STATIC_DRAW);
-        count = (GLsizei) m->elements.size();
-    }
-    
-    void draw() {
-        
-    }
-};
 
 
 my_application::my_application() {
@@ -158,27 +207,22 @@ my_application::my_application() {
     
     opengl_health();
     
-    Voxel v{vec<size_t,3>{3,2,1}};
-    v(0,0,0) = v(0, 1, 0) = v(1, 1, 0) = v(2, 1, 0) = 1;
-    auto m = v.makeMesh();
-    buf.bind(GL_ARRAY_BUFFER).data(GL_ARRAY_BUFFER, m->vertices, GL_STATIC_DRAW);
-    vao.bind();
-    VoxelVertex::describe().use();
-    p->validate();
-    p->use();
-    elm.bind(GL_ELEMENT_ARRAY_BUFFER).data(GL_ELEMENT_ARRAY_BUFFER, m->elements, GL_STATIC_DRAW);
-    count = (GLsizei) m->elements.size();
+    
+    
+    
+    
+    
+    
     glEnable(GL_CULL_FACE);
     opengl_health();
 
+    p->use();
     (*p)["textureMatrix"] = identity<float, 4>() * (1.0f/16.f);
     (*p)["samplerColor"] = 0;
     (*p)["samplerNormal"] = 1;
     glEnable(GL_DEPTH_TEST);
     
     
-    p->validate();
-    p->use();
     
     opengl_health();
     
@@ -198,121 +242,36 @@ my_application::my_application() {
     
 	dynamicsWorld->setGravity(btVector3(0,-10,0));
 
-    // Bullet init end
-    
-    // Ground
-    {
-        btCollisionShape* groundShape = new btBoxShape(btVector3(btScalar(50.),btScalar(0.5),btScalar(50.)));
-        
-        collisionShapes.push_back(groundShape);
-        
-        btTransform groundTransform;
-        groundTransform.setIdentity();
-        groundTransform.setOrigin(btVector3(0,-3,0));
-        
-		btScalar mass(0.);
-        
-		//rigidbody is dynamic if and only if mass is non zero, otherwise static
-		bool isDynamic = (mass != 0.f);
-        
-		btVector3 localInertia(0,0,0);
-		if (isDynamic)
-			groundShape->calculateLocalInertia(mass,localInertia);
-        
-		//using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-		btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
-		btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,groundShape,localInertia);
-		btRigidBody* body = new btRigidBody(rbInfo);
-        
-		//add the body to the dynamics world
-		dynamicsWorld->addRigidBody(body);
-	}
     
     /*
-    {
-		//create a dynamic rigidbody
-        btCollisionShape* colShape = new btBoxShape(btVector3(0.5,0.5,0.5));
-		//btCollisionShape* colShape = new btSphereShape(btScalar(1.));
-		collisionShapes.push_back(colShape);
-        
-		/// Create Dynamic Objects
-		btTransform startTransform;
-		startTransform.setIdentity();
-        
-		btScalar	mass(1.f);
-        
-		//rigidbody is dynamic if and only if mass is non zero, otherwise static
-		bool isDynamic = (mass != 0.f);
-        
-		btVector3 localInertia(0,0,0);
-		if (isDynamic)
-			colShape->calculateLocalInertia(mass,localInertia);
-        
-        startTransform.setOrigin(btVector3(0.5,2,0));
-		
-        //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-        btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(mass,myMotionState,colShape,localInertia);
-        btRigidBody* body = new btRigidBody(rbInfo);
-        
-        dynamicsWorld->addRigidBody(body);
-	}
+    Voxel v{vec<size_t,3>{3,2,1}};
+    v(0,0,0) = v(0, 1, 0) = v(1, 1, 0) = v(2, 1, 0) = 1;
      */
-
     
-    {
-		//create a dynamic rigidbody
-        btCompoundShape* colShape = new btCompoundShape(false);
-        //btCollisionShape* colShape = new btBoxShape(btVector3(0.5,0.5,0.5));
-		//btCollisionShape* colShape = new btSphereShape(btScalar(1.));
-		collisionShapes.push_back(colShape);
-
-        btTransform startTransform;
-		startTransform.setIdentity();
-        
-        vector<btScalar> masses;
-        btScalar totalMass = 0;
-        
-        for (int i = 0; i != v.size()[0]; ++i)
-            for (int j = 0; j != v.size()[1]; ++j)
-                for (int k = 0; k != v.size()[2]; ++k)
-                    if (v(i,j,k))
-                    {
-                        startTransform.setOrigin(btVector3(i + 0.5, j + 0.5, k + 0.5));
-                        colShape->addChildShape(startTransform, new btBoxShape(btVector3(0.5,0.5,0.5))); // leak!
-                        masses.push_back(1);
-                        totalMass += 1;
-                    }
-        
-        btTransform principal;
-        btVector3 localInertia;
-        colShape->calculatePrincipalAxisTransform(masses.data(), principal, localInertia);
-        
-        for (int i = 0; i != colShape->getNumChildShapes(); ++i)
-        {
-            btTransform c = colShape->getChildTransform(i);
-            colShape->updateChildTransform(i, principal.inverseTimes(c));
-        }
-
-        
-		/// Create Dynamic Objects
-		
-        startTransform = principal;
-        
-        
-        startTransform.setOrigin(btVector3(0.6,2,0));
-		
-        //using motionstate is recommended, it provides interpolation capabilities, and only synchronizes 'active' objects
-        btDefaultMotionState* myMotionState = new btDefaultMotionState(startTransform);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(totalMass,myMotionState,colShape,localInertia);
-        btRigidBody* body = new btRigidBody(rbInfo);
-        
-        dynamicsWorld->addRigidBody(body);
-	}
-
-   
+    Voxel v{vec<size_t,3>{4,4,1}};
+    randomize(v);
     
     
+    btTransform trans;
+    trans.setIdentity();
+    vb.reset(new VoxelBody(v, *p, trans, true));
+    dynamicsWorld->addRigidBody(vb->body.get());
+    
+    trans.setOrigin(btVector3(0,-5,0));
+    ground.reset(new VoxelBody(v, *p, trans, false));
+    dynamicsWorld->addRigidBody(ground->body.get());
+    
+    
+    
+    
+    
+    
+    
+    p->validate();
+    p->use();
+    
+    
+    // Bullet init end
     
     
    
@@ -363,6 +322,7 @@ void my_application::render(size_t width, size_t height, double time) {
     
     dynamicsWorld->stepSimulation(1.f/60.f,10);
     
+    /*
     //print positions of all objects
     for (int j=dynamicsWorld->getNumCollisionObjects()-1; j>=0 ;j--)
     {
@@ -388,6 +348,11 @@ void my_application::render(size_t width, size_t height, double time) {
             
         }
     }
+     */
+    
+    vb->draw(*p);
+    ground->draw(*p);
+    
 
     opengl_health();
     
