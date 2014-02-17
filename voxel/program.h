@@ -17,7 +17,7 @@
 #include "shader.h"
 #include "vec.h"
 
-class program : public named {
+class program : public Named {
 
 public:
 

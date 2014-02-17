@@ -12,9 +12,11 @@ layout(location = 4) in float inAmbientOcclusion;
 
 out vec4 varTexcoord;
 out float varAmbientOcclusion;
+out vec4 varPosition;
 
 void main (void)
 {
+    varPosition = modelMatrix * inPosition;
 	gl_Position	= cameraProjectionMatrix * cameraViewMatrix * modelMatrix * inPosition;
     varTexcoord = textureMatrix * inTexcoord;
     varAmbientOcclusion = inAmbientOcclusion;

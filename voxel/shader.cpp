@@ -49,7 +49,7 @@ shader& shader::compile() {
     }
     GLint status;
     glGetShaderiv(name_, GL_COMPILE_STATUS, &status);
-    if (!status)
-        throw compile_error{};
+    //if (!status)
+      //  throw compile_error{};
     return *this;
 }

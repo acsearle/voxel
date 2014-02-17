@@ -23,6 +23,7 @@
 #include "vertex.h"
 #include "voxel.h"
 #include "Texture.h"
+#include "framebuffer.h"
 
 using namespace std;
 
@@ -34,7 +35,7 @@ application::~application() {
 
 
 
-class buffer : public named {
+class buffer : public Named {
 public:
     buffer() { glGenBuffers(1, &name_); }
     ~buffer() { glDeleteBuffers(1, &name_); }
@@ -46,7 +47,7 @@ public:
 };
 
 
-class vertex_array : public named {
+class vertex_array : public Named {
 public:
     vertex_array() { glGenVertexArrays(1, &name_); }
     ~vertex_array() { glDeleteVertexArrays(1, &name_); }
@@ -135,7 +136,20 @@ public:
 
 };
 
-
+class Projection {
+public:
+    mat<float, 4, 4> proj;
+    mat<float, 4, 4> view;
+    void drawAsCamera(program& p) {
+        p["cameraProjectionMatrix"] = proj;
+        p["cameraViewMatrix"] = view;
+    }
+    void drawAsSpotlight(program& p) {
+        p["spotlightProjectionMatrix"] = proj;
+        p["spotlightViewMatrix"] = view;
+    }
+    
+};
 
 
 class my_application : public application {
@@ -153,8 +167,13 @@ private:
     unique_ptr<program> p;
     unique_ptr<Texture> textureColor;
     unique_ptr<Texture> textureNormal;
+    unique_ptr<ShadowBuffer> shadowBuffer;
+    
+    Projection camera;
+    Projection light;
     
     vector<unique_ptr<VoxelBody>> bodies;
+    
     
     unique_ptr<btDefaultCollisionConfiguration> collisionConfiguration;
 	unique_ptr<btCollisionDispatcher> dispatcher;
@@ -187,6 +206,10 @@ my_application::my_application() {
     textureColor = makeTexture(*makeImageTextures());
     glActiveTexture(GL_TEXTURE1);
     textureNormal = makeTexture(*makeImageNormals());
+    glActiveTexture(GL_TEXTURE2);
+    shadowBuffer.reset(new ShadowBuffer(4096, 4096));
+
+    
     
     opengl_health();
     
@@ -203,8 +226,11 @@ my_application::my_application() {
     (*p)["textureMatrix"] = identity<float, 4>() * (1.0f/16.f);
     (*p)["samplerColor"] = 0;
     (*p)["samplerNormal"] = 1;
-    glEnable(GL_DEPTH_TEST);
+    (*p)["samplerShadow"] = 2;
     
+    
+    
+    glEnable(GL_DEPTH_TEST);
     
     
     opengl_health();
@@ -319,25 +345,47 @@ my_application::~my_application() {
 
 void my_application::render(size_t width, size_t height, double time) {
     
-    glViewport(0, 0, (int) width, (int) height);
-    //glClearColor(rand()&1,rand()&1,rand()&1,1);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    
-    (*p)["cameraProjectionMatrix"] = perspective((float) M_PI_4*0.7f, width / (float) height, 1.f, 1000.f);
-    (*p)["cameraViewMatrix"] = lookat(vec<float, 3>(32.0f, 48.0f, 64.0f),
-                                      vec<float, 3>(8.0f, 8.0f, 8.0f),
-                                      vec<float, 3>(0.0f, 1.0f, 0.0f));
-
     static int countdown = 60;
     
     if (--countdown < 0)
         dynamicsWorld->stepSimulation(1.f/60.f,10);
     
+    camera.proj = perspective((float) M_PI_4*0.7f, width / (float) height, 1.f, 1000.f);
+    camera.view = lookat(vec<float, 3>(32.0f, 48.0f, 64.0f),
+                         vec<float, 3>(8.0f, 8.0f, 8.0f),
+                         vec<float, 3>(0.0f, 1.0f, 0.0f));
+    light.proj = perspective((float) M_PI_4*0.7f, width / (float) height, 1.f, 1000.f);
+    light.view = lookat(vec<float, 3>(48.0f, 64.0f, 32.0f),
+                        vec<float, 3>(8.0f, 8.0f, 8.0f),
+                        vec<float, 3>(0.0f, 1.0f, 0.0f));
     
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, *textureColor);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, *textureNormal);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    
+    shadowBuffer->bind();
+    glViewport(0, 0, shadowBuffer->width, shadowBuffer->height);
+    glClear(GL_DEPTH_BUFFER_BIT);
+    light.drawAsCamera(*p);
+    glEnable(GL_POLYGON_OFFSET_FILL);
+    glPolygonOffset(2, 1);
     for (auto& q : bodies)
         q->draw(*p);
+    glDisable(GL_POLYGON_OFFSET_FILL);
 
+    glBindTexture(GL_TEXTURE_2D, shadowBuffer->depth);
+    
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    glViewport(0, 0, (int) width, (int) height);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    camera.drawAsCamera(*p);
+    light.drawAsSpotlight(*p);
+    for (auto& q : bodies)
+        q->draw(*p);
+    
     opengl_health();
     
     

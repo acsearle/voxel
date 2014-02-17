@@ -15,7 +15,7 @@
 #include "named.h"
 
 
-class shader : public named
+class shader : public Named
 {
 
 public:

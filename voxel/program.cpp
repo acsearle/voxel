@@ -91,8 +91,8 @@ program::uniform program::operator[](string s) {
 
 program::uniform program::operator[](const char* c) {
     GLint location = glGetUniformLocation(name_, c);
-    if (location == -1)
-        throw exception{};
+    //if (location == -1)
+    //    throw exception{};
     return program::uniform(name_, location);
 }
 
