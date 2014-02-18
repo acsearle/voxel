@@ -47,35 +47,47 @@ unique_ptr<mesh<VoxelVertex, GLuint>> Voxel::makeMesh() const {
                         m->vertices.push_back(VoxelVertex(x+i,y+j,z+k,s+u,t+v, rand()));
                     };
                     // x == 0
-                    emit(0,0,0,0,0);
-                    emit(0,0,1,1,0);
-                    emit(0,1,1,1,1);
-                    emit(0,1,0,0,1);
+                    if ((i == 0) || !operator()(i-1,j,k)) {
+                        emit(0,0,0,0,0);
+                        emit(0,0,1,1,0);
+                        emit(0,1,1,1,1);
+                        emit(0,1,0,0,1);
+                    }
                     // y == 0
+                    if ((j == 0) || !operator()(i,j-1,k)) {
                     emit(0,0,0,1,0);
                     emit(1,0,0,2,0);
                     emit(1,0,1,2,1);
                     emit(0,0,1,1,1);
+                    }
                     // z == 0
+                    if ((k == 0) || !operator()(i,j,k-1)) {
                     emit(0,0,0,2,0);
                     emit(0,1,0,2,1);
                     emit(1,1,0,3,1);
                     emit(1,0,0,3,0);
+                    }
                     // x == 1
+                    if ((i+1==size_[0]) || !operator()(i+1,j,k)) {
                     emit(1,0,0,3,0);
                     emit(1,1,0,3,1);
                     emit(1,1,1,4,1);
                     emit(1,0,1,4,0);
+                    }
                     // y == 1
+                    if ((j+1==size_[1]) || !operator()(i,j+1,k)) {
                     emit(0,1,0,4,0);
                     emit(0,1,1,4,1);
                     emit(1,1,1,5,1);
                     emit(1,1,0,5,0);
+                    }
                     // z == 1
+                    if ((k+1==size_[2]) || !operator()(i,j,k+1)) {
                     emit(0,0,1,5,0);
                     emit(1,0,1,6,0);
                     emit(1,1,1,6,1);
                     emit(0,1,1,5,1);
+                    }
                 }
     for (GLuint i = 0; i != m->vertices.size(); i += 4) {
         m->elements.push_back(i);

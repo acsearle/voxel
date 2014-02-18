@@ -17,9 +17,9 @@ layout(location = 1) out vec4 outNormal;
 
 void main (void)
 {
-    outColor    = texture(samplerColor, varTexcoord.st, 0.0);
+    vec4 color = texture(samplerColor, varTexcoord.st, 0.0);
 
-    vec4 modelNormal   = vec4(texture(samplerNormal, varTexcoord.st, 0.0).xyz * 2 - 1, 0);
+    vec4 modelNormal = vec4(texture(samplerNormal, varTexcoord.st, 0.0).xyz * 2 - 1, 0);
     vec4 worldNormal = modelMatrix * modelNormal;
     outNormal = worldNormal * 0.5 + 0.5;
     vec4 spotlightEyeNormal = spotlightViewMatrix * worldNormal;
@@ -33,7 +33,7 @@ void main (void)
     
     float incidence = clamp(dot(normalize(spotlightEyeNormal), normalize(-spotlightEyePosition)), 0, 1);
     
-    outColor = lit ? vec4(1,1,1,1) * incidence : vec4(0,0,0,0);
+    outColor = ((lit ? incidence : 0) * 0.8 + varAmbientOcclusion * 0.2) * color;
     
     /*
     float light = clamp(dot(normalize(normal.xyz), normalize(vec3(1,3,2))), 0, 1);

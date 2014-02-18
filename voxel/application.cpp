@@ -161,8 +161,14 @@ public:
     virtual ~my_application();
     
     virtual void render(size_t width, size_t height, double time);
-    
+
+    virtual void mouseDragged(float deltaX, float deltaY);
+    virtual void mouseLocation(float mouseX, float mouseY);
+
 private:
+    
+    float phi, theta;
+    float mouseX, mouseY;
     
     unique_ptr<program> p;
     unique_ptr<Texture> textureColor;
@@ -197,6 +203,8 @@ my_application::my_application() {
     cout << glGetString(GL_RENDERER) << endl;
     cout << glGetString(GL_VERSION) << endl;
     
+    phi = -0.5;
+    theta = 0.5;
     
     p = make_program("basic");
     
@@ -207,7 +215,7 @@ my_application::my_application() {
     glActiveTexture(GL_TEXTURE1);
     textureNormal = makeTexture(*makeImageNormals());
     glActiveTexture(GL_TEXTURE2);
-    shadowBuffer.reset(new ShadowBuffer(4096, 4096));
+    shadowBuffer.reset(new ShadowBuffer(2048, 2048));
 
     
     
@@ -343,17 +351,33 @@ my_application::~my_application() {
     
 }
 
+void my_application::mouseLocation(float mouseX, float mouseY) {
+    this->mouseX = mouseX;
+    this->mouseY = mouseY;
+}
+
+void my_application::mouseDragged(float deltaX, float deltaY) {
+    // make thread safe
+    //phi += deltaX * 0.01f;
+    //theta += deltaY * 0.01f;
+}
+
+
 void my_application::render(size_t width, size_t height, double time) {
     
-    static int countdown = 60;
+    //cout << mouseX << endl;
     
-    if (--countdown < 0)
-        dynamicsWorld->stepSimulation(1.f/60.f,10);
+    
+    dynamicsWorld->stepSimulation(1.f/60.f,10);
     
     camera.proj = perspective((float) M_PI_4*0.7f, width / (float) height, 1.f, 1000.f);
+    /*
     camera.view = lookat(vec<float, 3>(32.0f, 48.0f, 64.0f),
                          vec<float, 3>(8.0f, 8.0f, 8.0f),
                          vec<float, 3>(0.0f, 1.0f, 0.0f));
+     */
+    camera.view = translate(vec<float, 3>(0,0,-70)) * rotateX(theta) * rotateY(phi) * translate(vec<float,3>(-8.f,0.f,-8.f));
+    
     light.proj = perspective((float) M_PI_4*0.7f, width / (float) height, 1.f, 1000.f);
     light.view = lookat(vec<float, 3>(48.0f, 64.0f, 32.0f),
                         vec<float, 3>(8.0f, 8.0f, 8.0f),

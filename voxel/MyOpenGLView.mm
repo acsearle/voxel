@@ -50,6 +50,14 @@ application* application_;
     
     // Opt-In to Retina resolution
     [self setWantsBestResolutionOpenGLSurface:YES];
+    
+    
+    
+}
+
+- (BOOL) acceptsFirstResponder
+{
+    return YES;
 }
 
 - (CVReturn) getFrameForTime:(const CVTimeStamp*)outputTime
@@ -97,6 +105,10 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 											 selector:@selector(windowWillClose:)
 												 name:NSWindowWillCloseNotification
 											   object:[self window]];
+    
+    
+    [[self window] setAcceptsMouseMovedEvents:YES];
+
 }
 
 - (void) windowWillClose:(NSNotification*)notification
@@ -231,5 +243,35 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 	//[super dealloc];
 }
 
+
+-(void) mouseMoved:(NSEvent *)theEvent
+{
+    NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    application_->mouseLocation(location.x, location.y);
+    application_->mouseDragged([theEvent deltaX], [theEvent deltaY]);
+}
+
+-(void) mouseDragged:(NSEvent *)theEvent
+{
+    NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    application_->mouseLocation(location.x, location.y);
+    application_->mouseDragged([theEvent deltaX], [theEvent deltaY]);
+}
+
+-(void) mouseDown:(NSEvent *)theEvent
+{
+    NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    application_->mouseLocation(location.x, location.y);
+//    CGAssociateMouseAndMouseCursorPosition(NO);
+//    CGDisplayHideCursor(kCGDirectMainDisplay);
+}
+
+-(void) mouseUp:(NSEvent *)theEvent
+{
+    NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    application_->mouseLocation(location.x, location.y);
+//    CGDisplayShowCursor(kCGDirectMainDisplay);
+//    CGAssociateMouseAndMouseCursorPosition(YES);
+}
 
 @end

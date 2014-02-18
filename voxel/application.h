@@ -20,6 +20,9 @@ public:
     virtual ~application() = 0;
     
     virtual void render(std::size_t width, std::size_t height, double time) = 0;
+    
+    virtual void mouseDragged(float deltaX, float deltaY) = 0;
+    virtual void mouseLocation(float mouseX, float mouseY) = 0;
 
 };
 
