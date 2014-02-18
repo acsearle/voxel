@@ -365,7 +365,32 @@ void my_application::mouseDragged(float deltaX, float deltaY) {
 
 void my_application::render(size_t width, size_t height, double time) {
     
-    //cout << mouseX << endl;
+    // Retina means the mouse coordinates in points don't match the pixels
+    float u = (mouseX * 2) / width * 2 - 1;
+    float v = (mouseY * 2) / height * 2 - 1;
+    vec<float, 4> start = inverse(camera.proj * camera.view) * vec<float, 4>(u,v,-1,1);
+    start /= start.w;
+    vec<float, 4> end = inverse(camera.proj * camera.view) * vec<float, 4>(u,v,+1,1);
+    end /= end.w;
+
+    btVector3 rayFromWorld(start.x, start.y, start.z);
+    btVector3 rayToWorld(end.x, end.y, end.z);
+    btCollisionWorld::ClosestRayResultCallback RayCallback(rayFromWorld, rayToWorld);
+    dynamicsWorld->getCollisionWorld()->rayTest(rayFromWorld, rayToWorld, RayCallback);
+    if (RayCallback.hasHit()) {
+        btRigidBody* body = const_cast<btRigidBody*>(btRigidBody::upcast(RayCallback.m_collisionObject));
+        if (body) {
+            //body->applyCentralForce(btVector3(0,20,0));
+            //body->applyCentralForce(RayCallback.m_hitNormalWorld * -100);
+            //body->applyForce(RayCallback.m_hitNormalWorld / body->getInvMass() * 10,
+            //                 body->getWorldTransform().inverse() * RayCallback.m_hitPointWorld);
+            //body->applyForce((rayFromWorld - rayToWorld).normalize() / body->getInvMass() * -10,
+            //                 body->getWorldTransform().inverse() * RayCallback.m_hitPointWorld);
+            body->applyForce((rayFromWorld - rayToWorld).normalize() * -1000,
+                             body->getWorldTransform().inverse() * RayCallback.m_hitPointWorld);
+            body->setActivationState(DISABLE_DEACTIVATION);
+        }
+    }
     
     
     dynamicsWorld->stepSimulation(1.f/60.f,10);
