@@ -11,15 +11,15 @@
 
 #include <OpenGL/gl3.h>
 
-class named {
+class Named {
 public:
-    named() : name_(0) {}
+    Named() : name_(0) {}
     operator GLuint() { return name_; }
 protected:
     GLuint name_;
 private:
-    named(const named&);
-    named& operator=(const named&);
+    Named(const Named&);
+    Named& operator=(const Named&);
 };
 
 #endif /* defined(__voxel__named__) */
