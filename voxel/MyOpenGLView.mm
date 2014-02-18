@@ -248,7 +248,6 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 {
     NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
     application_->mouseLocation(location.x, location.y);
-    application_->mouseDragged([theEvent deltaX], [theEvent deltaY]);
 }
 
 -(void) mouseDragged:(NSEvent *)theEvent

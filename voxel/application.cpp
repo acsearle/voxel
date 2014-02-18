@@ -266,10 +266,10 @@ my_application::my_application() {
      */
     
     {
-        btCollisionShape* groundShape = new btBoxShape(btVector3(50,50,50));
+        btCollisionShape* groundShape = new btBoxShape(btVector3(32,32,32));
         btTransform groundTransform;
         groundTransform.setIdentity();
-        groundTransform.setOrigin(btVector3(0,-50,0));
+        groundTransform.setOrigin(btVector3(0,-32,0));
         btDefaultMotionState* myMotionState = new btDefaultMotionState(groundTransform);
         btRigidBody::btRigidBodyConstructionInfo rbInfo(0,myMotionState,groundShape,btVector3(0,0,0));
         btRigidBody* body = new btRigidBody(rbInfo);
@@ -358,8 +358,8 @@ void my_application::mouseLocation(float mouseX, float mouseY) {
 
 void my_application::mouseDragged(float deltaX, float deltaY) {
     // make thread safe
-    //phi += deltaX * 0.01f;
-    //theta += deltaY * 0.01f;
+    phi += deltaX * 0.01f;
+    theta += deltaY * 0.01f;
 }
 
 
