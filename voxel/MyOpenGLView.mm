@@ -246,20 +246,20 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 
 -(void) mouseMoved:(NSEvent *)theEvent
 {
-    NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint location = [self convertPointToBacking:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
     application_->mouseLocation(location.x, location.y);
 }
 
 -(void) mouseDragged:(NSEvent *)theEvent
 {
-    NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint location = [self convertPointToBacking:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
     application_->mouseLocation(location.x, location.y);
     application_->mouseDragged([theEvent deltaX], [theEvent deltaY]);
 }
 
 -(void) mouseDown:(NSEvent *)theEvent
 {
-    NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint location = [self convertPointToBacking:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
     application_->mouseLocation(location.x, location.y);
 //    CGAssociateMouseAndMouseCursorPosition(NO);
 //    CGDisplayHideCursor(kCGDirectMainDisplay);
@@ -267,7 +267,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 
 -(void) mouseUp:(NSEvent *)theEvent
 {
-    NSPoint location = [self convertPoint:[theEvent locationInWindow] fromView:nil];
+    NSPoint location = [self convertPointToBacking:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
     application_->mouseLocation(location.x, location.y);
 //    CGDisplayShowCursor(kCGDirectMainDisplay);
 //    CGAssociateMouseAndMouseCursorPosition(YES);

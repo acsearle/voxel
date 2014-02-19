@@ -9,6 +9,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <iostream>
+#include <map>
 
 #include <OpenGL/gl3.h>
 #include "btBulletDynamicsCommon.h"
@@ -65,6 +66,13 @@ public:
     vertex_array vao;
     GLsizei count;
     unique_ptr<btRigidBody> body;
+    unique_ptr<btCompoundShape> colShape;
+    btDynamicsWorld* m_dynamicsWorld;
+    
+    static btBoxShape* unitCube() {
+        static unique_ptr<btBoxShape> p{new btBoxShape{btVector3{0.5,0.5,0.5}}};
+        return p.get();
+    }
     
     VoxelBody(const Voxel& v, program& p, const btTransform& worldTransform, bool dynamic, btDynamicsWorld& dynamicsWorld) {
         auto m = v.makeMesh();
@@ -74,9 +82,8 @@ public:
         elm.bind(GL_ELEMENT_ARRAY_BUFFER).data(GL_ELEMENT_ARRAY_BUFFER, m->elements, GL_STATIC_DRAW);
         count = (GLsizei) m->elements.size();
         
-        btCompoundShape* colShape = new btCompoundShape(true); // leak!
-		// collisionShapes.push_back(colShape);
-        btTransform childTransform;
+        colShape.reset(new btCompoundShape(true));
+		btTransform childTransform;
 		childTransform.setIdentity();
         vector<btScalar> masses;
         btScalar totalMass = 0;
@@ -85,9 +92,14 @@ public:
                 for (int k = 0; k != v.size()[2]; ++k)
                     if (v(i,j,k))
                     {
-                        // should check if this voxel is surrounded and therefore not necessary ///////////////////////////////////
+                        // should check if this voxel is surrounded and therefore does not participate in collision detection
+                        // though it must be there to get mass and inertia tensor right
+                        
+                        // should merge adjacent voxels -- run length encoding -- to produce vastly fewer objects
+                        // combine anything with the same density, not same identity
+                        
                         childTransform.setOrigin(btVector3(i + 0.5, j + 0.5, k + 0.5));
-                        colShape->addChildShape(childTransform, new btBoxShape(btVector3(0.5,0.5,0.5))); // leak! /////////////////
+                        colShape->addChildShape(childTransform, unitCube());
                         masses.push_back(1);
                         totalMass += 1;
                     }
@@ -103,15 +115,17 @@ public:
             localInertia = btVector3(0,0,0);
         }
         btDefaultMotionState* myMotionState = new btDefaultMotionState(worldTransform * principal);
-        btRigidBody::btRigidBodyConstructionInfo rbInfo(totalMass,myMotionState,colShape,localInertia);
+        btRigidBody::btRigidBodyConstructionInfo rbInfo(totalMass,myMotionState,colShape.get(),localInertia);
         body.reset(new btRigidBody(rbInfo));
         dynamicsWorld.addRigidBody(body.get());
         principal.inverse().getOpenGLMatrix(model.data());
+        m_dynamicsWorld = &dynamicsWorld;
 
     }
     
     ~VoxelBody() {
         // undo add to dynamics world ///////////////////////////////////////////////////////////
+        m_dynamicsWorld->removeRigidBody(body.get());
     }
     
     void draw(program& p) {
@@ -135,6 +149,62 @@ public:
     }
 
 };
+
+
+int64_t morton(int64_t x, int64_t y, int64_t z) {
+    int64_t r = 0;
+    for (int i = 0; i != 21; ++i) {
+        r |= (x & (1 << i)) << (i * 3 + 0);
+        r |= (y & (1 << i)) << (i * 3 + 1);
+        r |= (z & (1 << i)) << (i * 3 + 2);
+    }
+    return r;
+}
+
+template<typename T, size_t chunkSize> class ChunkedVoxel {
+    
+    struct Chunk {
+        vector<T> data_;
+        //Chunk() : data_(chunkSize * chunkSize * chunkSize) {}
+        Chunk(int64_t x, int64_t y, int64_t z) : data_(chunkSize * chunkSize * chunkSize) {
+            x *= chunkSize;
+            y *= chunkSize;
+            z *= chunkSize;
+        }
+        T getVoxel(int64_t x, int64_t y, int64_t z) {
+            return data_[x + chunkSize * (y + chunkSize * z)];
+        }
+        void setVoxel(int64_t x, int64_t y, int64_t z, T t) {
+            data_[x + chunkSize * (y + chunkSize * z)] = t;
+        }
+    };
+    
+    map<int64_t, Chunk> map_;
+    
+    
+    T getVoxel(int64_t x, int64_t y, int64_t z) {
+        int64_t m = morton(x/chunkSize, y/chunkSize, z/chunkSize);
+        auto i = map_.find(m);
+        return i != map_.end() ? map_->get(x%chunkSize,y%chunkSize,z%chunkSize) : 0;
+    }
+    
+    void setVoxel(int64_t x, int64_t y, int64_t z, T t) {
+        int64_t m = morton(x/chunkSize, y/chunkSize, z/chunkSize);
+        auto i = map_.find(m);
+        if (i == map_.end) {
+            i = map_.emplace(x/chunkSize,y/chunkSize,z/chunkSize).first;
+        }
+        return i->set(x % chunkSize,
+                      y % chunkSize,
+                      z % chunkSize,
+                      t);
+    }
+    
+    
+    
+};
+
+
 
 class Projection {
 public:
@@ -328,27 +398,6 @@ my_application::my_application() {
 
 my_application::~my_application() {
     
-    //remove the rigidbodies from the dynamics world and delete them
-	for (int i=dynamicsWorld->getNumCollisionObjects()-1; i>=0 ;i--)
-	{
-		btCollisionObject* obj = dynamicsWorld->getCollisionObjectArray()[i];
-		btRigidBody* body = btRigidBody::upcast(obj);
-		if (body && body->getMotionState())
-		{
-			delete body->getMotionState();
-		}
-		dynamicsWorld->removeCollisionObject( obj );
-		delete obj;
-	}
-    
-	//delete collision shapes
-	for (int j=0;j<collisionShapes.size();j++)
-	{
-		btCollisionShape* shape = collisionShapes[j];
-		collisionShapes[j] = 0;
-		delete shape;
-	}
-    
 }
 
 void my_application::mouseLocation(float mouseX, float mouseY) {
@@ -365,9 +414,11 @@ void my_application::mouseDragged(float deltaX, float deltaY) {
 
 void my_application::render(size_t width, size_t height, double time) {
     
+    
+    
     // Retina means the mouse coordinates in points don't match the pixels
-    float u = (mouseX * 2) / width * 2 - 1;
-    float v = (mouseY * 2) / height * 2 - 1;
+    float u = mouseX / width * 2 - 1;
+    float v = mouseY / height * 2 - 1;
     vec<float, 4> start = inverse(camera.proj * camera.view) * vec<float, 4>(u,v,-1,1);
     start /= start.w;
     vec<float, 4> end = inverse(camera.proj * camera.view) * vec<float, 4>(u,v,+1,1);
