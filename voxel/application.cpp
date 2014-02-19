@@ -25,6 +25,7 @@
 #include "voxel.h"
 #include "Texture.h"
 #include "framebuffer.h"
+#include "Buffer.h"
 
 using namespace std;
 
@@ -36,61 +37,46 @@ application::~application() {
 
 
 
-class buffer : public Named {
-public:
-    buffer() { glGenBuffers(1, &name_); }
-    ~buffer() { glDeleteBuffers(1, &name_); }
-    buffer& bind(GLenum target) { glBindBuffer(target, name_); return *this;}
-    template<typename T> buffer& data(GLenum target, vector<T> data, GLenum usage) {
-        glBufferData(target, sizeof(T) * data.size(), data.data(), usage);
-        return *this;
-    }
-};
-
-
-class vertex_array : public Named {
-public:
-    vertex_array() { glGenVertexArrays(1, &name_); }
-    ~vertex_array() { glDeleteVertexArrays(1, &name_); }
-    vertex_array& bind() { glBindVertexArray(name_); return *this;}
-    
-};
-
-
-
 class VoxelBody {
 public:
     mat<float, 4, 4> ATTRIBUTE_ALIGNED128(model);
-    buffer buf;
-    buffer elm;
-    vertex_array vao;
+    ArrayBuffer buf;
+    ElementArrayBuffer elm;
+    VertexArrayObject vao;
     GLsizei count;
     unique_ptr<btRigidBody> body;
     unique_ptr<btCompoundShape> colShape;
     btDynamicsWorld* m_dynamicsWorld;
+    shared_ptr<const Voxel> m_voxel;
     
     static btBoxShape* unitCube() {
         static unique_ptr<btBoxShape> p{new btBoxShape{btVector3{0.5,0.5,0.5}}};
         return p.get();
     }
     
-    VoxelBody(const Voxel& v, program& p, const btTransform& worldTransform, bool dynamic, btDynamicsWorld& dynamicsWorld) {
-        auto m = v.makeMesh();
-        buf.bind(GL_ARRAY_BUFFER).data(GL_ARRAY_BUFFER, m->vertices, GL_STATIC_DRAW);
+    VoxelBody(shared_ptr<const Voxel> v, program& p, const btTransform& worldTransform, bool dynamic, btDynamicsWorld& dynamicsWorld) {
+        
+        // Set up drawing code
+        
+        m_voxel = v;
+        auto m = v->makeMesh();
+        buf.data(m->vertices);
         vao.bind();
         VoxelVertex::describe().use();
-        elm.bind(GL_ELEMENT_ARRAY_BUFFER).data(GL_ELEMENT_ARRAY_BUFFER, m->elements, GL_STATIC_DRAW);
+        elm.data(m->elements);
         count = (GLsizei) m->elements.size();
+        
+        // Populate compound shape with occupied voxels
         
         colShape.reset(new btCompoundShape(true));
 		btTransform childTransform;
 		childTransform.setIdentity();
         vector<btScalar> masses;
         btScalar totalMass = 0;
-        for (int i = 0; i != v.size()[0]; ++i)
-            for (int j = 0; j != v.size()[1]; ++j)
-                for (int k = 0; k != v.size()[2]; ++k)
-                    if (v(i,j,k))
+        for (int i = 0; i != v->size()[0]; ++i)
+            for (int j = 0; j != v->size()[1]; ++j)
+                for (int k = 0; k != v->size()[2]; ++k)
+                    if ((*v)(i,j,k))
                     {
                         // should check if this voxel is surrounded and therefore does not participate in collision detection
                         // though it must be there to get mass and inertia tensor right
@@ -103,6 +89,9 @@ public:
                         masses.push_back(1);
                         totalMass += 1;
                     }
+        
+        // Determine the principal axes and transform to them
+        
         btTransform principal;
         btVector3 localInertia;
         colShape->calculatePrincipalAxisTransform(masses.data(), principal, localInertia);
@@ -110,6 +99,10 @@ public:
             btTransform c = colShape->getChildTransform(i);
             colShape->updateChildTransform(i, principal.inverseTimes(c));
         }
+        principal.inverse().getOpenGLMatrix(model.data());
+        
+        // Create rigid body and place it in the world
+        
         if (!dynamic) {
             totalMass = 0;
             localInertia = btVector3(0,0,0);
@@ -118,7 +111,6 @@ public:
         btRigidBody::btRigidBodyConstructionInfo rbInfo(totalMass,myMotionState,colShape.get(),localInertia);
         body.reset(new btRigidBody(rbInfo));
         dynamicsWorld.addRigidBody(body.get());
-        principal.inverse().getOpenGLMatrix(model.data());
         m_dynamicsWorld = &dynamicsWorld;
 
     }
@@ -131,7 +123,7 @@ public:
     void draw(program& p) {
         p.use();
         vao.bind();
-        elm.bind(GL_ELEMENT_ARRAY_BUFFER);
+        elm.bind();
      
         btTransform trans;
         body->getMotionState()->getWorldTransform(trans);
@@ -355,13 +347,13 @@ my_application::my_application() {
     
     VoxelPainting blobs = v.paint();
     for (short a : blobs.unique) {
-        Voxel u(v.size());
+        auto u = make_shared<Voxel>(v.size());
         // selectively copy from v into u
         for (size_t k = 0; k != v.size()[2]; ++k)
             for (size_t j = 0; j != v.size()[1]; ++j)
                 for (size_t i = 0; i != v.size()[0]; ++i)
                     if (blobs.mapping[blobs.p(i,j,k)] == a)
-                        u(i, j, k) = v(i, j, k);
+                        (*u)(i, j, k) = v(i, j, k);
         // make a new object
         btTransform trans;
         trans.setIdentity();
