@@ -269,6 +269,7 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 {
     NSPoint location = [self convertPointToBacking:[self convertPoint:[theEvent locationInWindow] fromView:nil]];
     application_->mouseLocation(location.x, location.y);
+    application_->mouseUp();
 //    CGDisplayShowCursor(kCGDirectMainDisplay);
 //    CGAssociateMouseAndMouseCursorPosition(YES);
 }

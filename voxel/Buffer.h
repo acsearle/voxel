@@ -52,6 +52,19 @@ public:
     }
 };
 
+
+class UniformBufferObject : public Buffer {
+    UniformBufferObject& bind() {
+        Buffer::bind(GL_UNIFORM_BUFFER);
+        return *this;
+    }
+    template<typename T> UniformBufferObject& data(const T& t) {
+        bind();
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(T), &t, GL_STATIC_DRAW);
+    }
+};
+
+
 class VertexArrayObject : public Named {
 public:
     VertexArrayObject() { glGenVertexArrays(1, &name_); }

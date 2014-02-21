@@ -47,14 +47,14 @@ public:
     unique_ptr<btRigidBody> body;
     unique_ptr<btCompoundShape> colShape;
     btDynamicsWorld* m_dynamicsWorld;
-    shared_ptr<const Voxel> m_voxel;
+    shared_ptr<const Voxel<char> > m_voxel;
     
     static btBoxShape* unitCube() {
         static unique_ptr<btBoxShape> p{new btBoxShape{btVector3{0.5,0.5,0.5}}};
         return p.get();
     }
     
-    VoxelBody(shared_ptr<const Voxel> v, program& p, const btTransform& worldTransform, bool dynamic, btDynamicsWorld& dynamicsWorld) {
+    VoxelBody(shared_ptr<const Voxel<char> > v, program& p, const btTransform& worldTransform, bool dynamic, btDynamicsWorld& dynamicsWorld) {
         
         // Set up drawing code
         
@@ -73,10 +73,10 @@ public:
 		childTransform.setIdentity();
         vector<btScalar> masses;
         btScalar totalMass = 0;
-        for (int i = 0; i != v->size()[0]; ++i)
-            for (int j = 0; j != v->size()[1]; ++j)
-                for (int k = 0; k != v->size()[2]; ++k)
-                    if ((*v)(i,j,k))
+        for (ptrdiff_t i = v->lower()[0]; i != v->upper()[0]; ++i)
+            for (ptrdiff_t j = v->lower()[1]; j != v->upper()[1]; ++j)
+                for (ptrdiff_t k = v->lower()[2]; k != v->upper()[2]; ++k)
+                    if (v->get(i,j,k))
                     {
                         // should check if this voxel is surrounded and therefore does not participate in collision detection
                         // though it must be there to get mass and inertia tensor right
@@ -112,6 +112,7 @@ public:
         body.reset(new btRigidBody(rbInfo));
         dynamicsWorld.addRigidBody(body.get());
         m_dynamicsWorld = &dynamicsWorld;
+        body->setUserPointer(this);
 
     }
     
@@ -226,6 +227,7 @@ public:
 
     virtual void mouseDragged(float deltaX, float deltaY);
     virtual void mouseLocation(float mouseX, float mouseY);
+    virtual void mouseUp();
 
 private:
     
@@ -241,6 +243,8 @@ private:
     Projection light;
     
     vector<unique_ptr<VoxelBody>> bodies;
+    
+    int m_mouseups;
     
     
     unique_ptr<btDefaultCollisionConfiguration> collisionConfiguration;
@@ -265,6 +269,7 @@ my_application::my_application() {
     cout << glGetString(GL_RENDERER) << endl;
     cout << glGetString(GL_VERSION) << endl;
     
+    m_mouseups = 0;
     phi = -0.5;
     theta = 0.5;
     
@@ -342,18 +347,18 @@ my_application::my_application() {
     }
     
     
-    Voxel v{vec<size_t,3>{16,16,16}};
+    Voxel<char> v{vec<ptrdiff_t,3>{0,0,0},vec<ptrdiff_t,3>{16,16,16}};
     randomize(v);
     
     VoxelPainting blobs = v.paint();
     for (short a : blobs.unique) {
-        auto u = make_shared<Voxel>(v.size());
+        auto u = make_shared<Voxel<char>>(v.lower(), v.upper());
         // selectively copy from v into u
-        for (size_t k = 0; k != v.size()[2]; ++k)
-            for (size_t j = 0; j != v.size()[1]; ++j)
-                for (size_t i = 0; i != v.size()[0]; ++i)
-                    if (blobs.mapping[blobs.p(i,j,k)] == a)
-                        (*u)(i, j, k) = v(i, j, k);
+        for (ptrdiff_t i = v.lower()[0]; i != v.upper()[0]; ++i)
+        for (ptrdiff_t j = v.lower()[1]; j != v.upper()[1]; ++j)
+        for (ptrdiff_t k = v.lower()[2]; k != v.upper()[2]; ++k)
+        if (blobs.mapping[blobs.p.get(i,j,k)] == a)
+                        u->set(vec<ptrdiff_t,3>(i, j, k), v.get(i, j, k));
         // make a new object
         btTransform trans;
         trans.setIdentity();
@@ -403,12 +408,18 @@ void my_application::mouseDragged(float deltaX, float deltaY) {
     theta += deltaY * 0.01f;
 }
 
+void my_application::mouseUp() {
+    ++m_mouseups;
+}
+
 
 void my_application::render(size_t width, size_t height, double time) {
     
     
     
     // Retina means the mouse coordinates in points don't match the pixels
+    while (m_mouseups) {
+        --m_mouseups;
     float u = mouseX / width * 2 - 1;
     float v = mouseY / height * 2 - 1;
     vec<float, 4> start = inverse(camera.proj * camera.view) * vec<float, 4>(u,v,-1,1);
@@ -429,10 +440,50 @@ void my_application::render(size_t width, size_t height, double time) {
             //                 body->getWorldTransform().inverse() * RayCallback.m_hitPointWorld);
             //body->applyForce((rayFromWorld - rayToWorld).normalize() / body->getInvMass() * -10,
             //                 body->getWorldTransform().inverse() * RayCallback.m_hitPointWorld);
-            body->applyForce((rayFromWorld - rayToWorld).normalize() * -1000,
-                             body->getWorldTransform().inverse() * RayCallback.m_hitPointWorld);
-            body->setActivationState(DISABLE_DEACTIVATION);
+            //body->applyForce((rayFromWorld - rayToWorld).normalize() * -1000,
+            //                 body->getWorldTransform().inverse() * RayCallback.m_hitPointWorld);
+            //body->setActivationState(DISABLE_DEACTIVATION);
+            
+            auto vb = reinterpret_cast<VoxelBody*>(body->getUserPointer());
+            if (vb) {
+            
+                unique_ptr<VoxelBody> a;
+                
+                for (auto i = bodies.begin(); i != bodies.end(); ++i) {
+                    if (i->get() == vb) {
+                        a = move(*i);
+                        bodies.erase(i);
+                        break;
+                    }
+                }
+                
+                shared_ptr<Voxel<char>> u = shared_ptr<Voxel<char> >(new Voxel<char>(*a->m_voxel));
+                
+                btTransform trans1;
+                body->getMotionState()->getWorldTransform(trans1);
+                btTransform trans2;
+                trans2.setFromOpenGLMatrix(vb->model.data());
+                trans1 = trans1 * trans2;
+
+                btVector3 x = RayCallback.m_hitPointWorld + RayCallback.m_hitNormalWorld * 0.25f;
+                x = trans1.inverse() * x;
+                u->push(vec<ptrdiff_t,3>((ptrdiff_t) floor(x.x()),
+                                         (ptrdiff_t) floor(x.y()),
+                                         (ptrdiff_t) floor(x.z())),
+                        1);
+                
+                unique_ptr<VoxelBody> b = unique_ptr<VoxelBody>(new VoxelBody(u,
+                                                                              *p,
+                                                                              trans1,
+                                                                              false,
+                                                                              *dynamicsWorld
+                                                                              ));
+                b->body->setActivationState(DISABLE_DEACTIVATION);
+                b->body->applyCentralForce(btVector3(0,20,0));
+                bodies.emplace_back(move(b));
+            }
         }
+    }
     }
     
     

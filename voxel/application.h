@@ -24,6 +24,7 @@ public:
     virtual void mouseDragged(float deltaX, float deltaY) = 0;
     virtual void mouseLocation(float mouseX, float mouseY) = 0;
 
+    virtual void mouseUp() = 0;
 };
 
 #endif /* defined(__voxel__application__) */

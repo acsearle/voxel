@@ -9,20 +9,24 @@
 #ifndef __voxel__voxel__
 #define __voxel__voxel__
 
+#include <cmath>
+#include <algorithm>
 
 #include "vec.h"
 #include "vertex.h"
 #include "mesh.h"
 
+using namespace std;
+
 class VoxelVertex {
 public:
-    vec<GLubyte, 3> inPosition;
+    vec<GLbyte, 3> inPosition;
     vec<GLubyte, 2> inTexcoord;
     GLubyte inAmbientOcclusion;
     static VertexDescription describe();
-    VoxelVertex(GLubyte x,
-                GLubyte y,
-                GLubyte z,
+    VoxelVertex(GLbyte x,
+                GLbyte y,
+                GLbyte z,
                 GLubyte s,
                 GLubyte t,
                 GLubyte a)
@@ -33,26 +37,76 @@ public:
 class VoxelPainting;
 
 
-class Voxel {
+template<typename T> class Voxel {
 
 public:
-
-    typedef unsigned short type;
     
     Voxel() {}
     
-    Voxel(vec<size_t, 3> size) : data_(prod(size), 0), size_(size) {}
-
-    type& operator()(size_t i, size_t j, size_t k) {
-        return data_[i + size_[0] * (j + size_[1] * k)];
+    Voxel(vec<ptrdiff_t, 3> lower, vec<ptrdiff_t, 3> upper)
+    : data_(prod(upper - lower), 0)
+    , min_(lower)
+    , max_(upper) {
+        stride_[0] = 1;
+        stride_[1] = (max_[0] - min_[0]);
+        stride_[2] = (max_[1] - min_[1]) * stride_[1];
+        offset_ = - dot(min_, stride_);
     }
-    const type& operator()(size_t i, size_t j, size_t k) const {
-        return data_[i + size_[0] * (j + size_[1] * k)];
+
+    T get(vec<ptrdiff_t, 3> x) const {
+        for (size_t i = 0; i != 3; ++i)
+            if ((x[i] < min_[i]) || (max_[i] <= x[i]))
+                return T{};
+        return data_[offset_ + dot(x, stride_)];
+    }
+    
+    T get(ptrdiff_t i, ptrdiff_t j, ptrdiff_t k) const {
+        return get(vec<ptrdiff_t, 3>(i,j,k));
+    }
+
+    void set(vec<ptrdiff_t, 3> x, T t) {
+        for (size_t i = 0; i != 3; ++i)
+            assert((min_[i] <= x[i]) && (x[i] < max_[i]));
+        data_[offset_ + dot(x, stride_)] = t;
+    }
+    
+    void set(ptrdiff_t i, ptrdiff_t j, ptrdiff_t k, T t) {
+        return set(vec<ptrdiff_t, 3>(i,j,k), t);
+    }
+
+    void push(vec<ptrdiff_t, 3> x, T t) {
+        // do we need to grow?
+        for (size_t q = 0; q != 3; ++q)
+        if ((x[q] < min_[q]) || (max_[q] <= x[q]))
+        {
+            vec<ptrdiff_t, 3> a {
+                min(min_[0], x[0]-1),
+                min(min_[1], x[1]-1),
+                min(min_[2], x[2]-1)
+            };
+            vec<ptrdiff_t, 3> b {
+                max(max_[0], x[0]+1),
+                max(max_[1], x[1]+1),
+                max(max_[2], x[2]+1)
+            };
+            Voxel<T> v {a, b};
+            
+            for (ptrdiff_t k = min_[2]; k != max_[2]; ++k)
+            for (ptrdiff_t j = min_[1]; j != max_[1]; ++j)
+            for (ptrdiff_t i = min_[0]; i != max_[0]; ++i)
+            v.set(i,j,k,get(i,j,k));
+            v.set(x, t);
+            swap(*this, v);
+            return;
+        }
+        // we don't need to grow
+        set(x, t);
     }
     
     std::unique_ptr<mesh<VoxelVertex, GLuint>> makeMesh() const;
     
-    vec<size_t, 3> size() const { return size_; }
+    vec<ptrdiff_t, 3> lower() const { return min_; }
+    vec<ptrdiff_t, 3> upper() const { return max_; }
     
     vec<float, 3> raycast(vec<float, 3> a,
                         vec<float, 3> b) const;
@@ -61,19 +115,23 @@ public:
     
 private:
     
-    std::vector<type> data_;
-    vec<size_t, 3> size_;
+    std::vector<T> data_;
+    vec<ptrdiff_t, 3> max_;
+    vec<ptrdiff_t, 3> min_;
+    vec<ptrdiff_t, 3> stride_;
+    ptrdiff_t offset_;
     
 };
 
+
 struct VoxelPainting {
-    Voxel p;
+    Voxel<short> p;
     vector<short> mapping;
     vector<short> unique;
 };
 
-void randomize(Voxel& v);
-void surface(Voxel& v);
+void randomize(Voxel<char>& v);
+void surface(Voxel<char>& v);
 
 
 #endif /* defined(__voxel__voxel__) */
