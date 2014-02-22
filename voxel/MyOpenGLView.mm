@@ -274,4 +274,25 @@ static CVReturn MyDisplayLinkCallback(CVDisplayLinkRef displayLink,
 //    CGAssociateMouseAndMouseCursorPosition(YES);
 }
 
+-(void) swipeWithEvent:(NSEvent *)event
+{
+    NSLog(@"Swipe");
+}
+
+-(void) magnifyWithEvent:(NSEvent *)event
+{
+    NSLog(@"Magnify");
+}
+
+-(void) rotateWithEvent:(NSEvent *)event
+{
+    NSLog(@"Rotate");
+}
+
+-(void) scrollWheel:(NSEvent *)theEvent
+{
+    application_->mouseDragged([theEvent deltaX], [theEvent deltaY]);
+}
+
+
 @end
