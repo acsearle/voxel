@@ -475,11 +475,11 @@ void my_application::render(size_t width, size_t height, double time) {
                 unique_ptr<VoxelBody> b = unique_ptr<VoxelBody>(new VoxelBody(u,
                                                                               *p,
                                                                               trans1,
-                                                                              false,
+                                                                              true,
                                                                               *dynamicsWorld
                                                                               ));
-                b->body->setActivationState(DISABLE_DEACTIVATION);
-                b->body->applyCentralForce(btVector3(0,20,0));
+                b->body->setAngularVelocity(a->body->getAngularVelocity());
+                b->body->setLinearVelocity(a->body->getLinearVelocity());
                 bodies.emplace_back(move(b));
             }
         }
