@@ -324,7 +324,8 @@ my_application::my_application() {
                                                     solver.get(),
                                                     collisionConfiguration.get()));
     
-	dynamicsWorld->setGravity(btVector3(0,-10,0));
+	//dynamicsWorld->setGravity(btVector3(0,-10,0));
+    dynamicsWorld->setGravity(btVector3(0,-10,0));
 
     
     /*
